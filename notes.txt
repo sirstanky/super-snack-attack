@@ -1,0 +1,50 @@
+BUGS:
+ball is no longer getting speed boosted by the bat
+
+BALANCE:
+
+CURRENT FOCUS:
+change all the string parameters in the classes to constants
+
+FEATURES
+add screen shake!
+create menu and level states
+animate new rows sliding into place
+charge up breaks multiple blocks (or some other benefit)
+click falling items to interact
+croissant shuriken to break bad items
+save points between rounds
+points can be spent in shops to upgrade things like:
+    bat move speed
+    catcher move speed
+    one time use power up items (slow down time, targeted shot with condiments, etc.)
+    swing cooldown
+
+DESIGN:
+drop ingredients in column place instead of by row?
+epic anime-style scene when getting a high score
+
+ingredients:
+    bats:
+        sub roll (basic)
+        baguette (heavy hits speed up ball and break multiple spots)
+    good:
+        lettuce
+        pickles
+        cheese
+        onions
+        green peppers
+    bad:
+        socks (knock off some ingredients)
+        trash bag (creates slipping hazards)
+        jellyfish (paralyzes catcher for a few seconds)
+        rocks (fall faster)
+        fish (knocks off ingredient and then next caught ingredient)
+    interactions:
+
+karate theme
+serious karate master pig makes the sandwich hitting a tomato with a sub roll and knocks ingredients down where his
+    energetic apprentice catches the toppings to score points
+
+control the master pig
+catcher is on autopilot
