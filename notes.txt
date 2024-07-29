@@ -1,0 +1,66 @@
+BUGS:
+pausing still runs the clock in delta time (leaves plummet after un-pausing)
+pausing won't un-pause if using the same key as pausing
+
+BALANCE:
+tune direction ball moves when hit by bat (make the ball go vertically when hit right but never horizontally)
+    MUCH CLOSER WITH THIS, STILL DOESN'T FEEL QUITE RIGHT
+    hard code angles at certain hit areas?
+        'skill' hit areas deflect accurately, other areas have a margin of variance
+
+CURRENT FOCUS:
+put a 'position' parameter in 'add block' for the managers
+    (or move block when hit to impact position and adjust speed for current delta frame time)
+create save file that tracks score between plays
+    add ability to reset score
+create different kinds of target blocks for scoring mechanics and color code them
+implement corner collision checks
+
+add sprites
+    create animations
+add weight effects to catcher:
+    catcher sinks with weight
+    add total limit where catcher drops the sandwich
+
+FEATURES:
+add screen shake!
+create menu and level states
+charge up breaks multiple blocks (or some other benefit)
+click falling items to interact
+croissant shuriken to break bad items
+save points between rounds
+points can be spent in shops to upgrade things like:
+    bat move speed
+    catcher move speed
+    one time use power up items (slow down time, targeted shot with condiments, etc.)
+    swing cooldown
+    extra balls (ball multiplier or extra lives)
+
+DESIGN:
+epic anime-style scene when getting a high score
+
+ingredients:
+    bats:
+        sub roll (basic)
+        baguette (heavy hits speed up ball and break multiple spots)
+    good:
+        lettuce
+        pickles
+        cheese
+        onions
+        green peppers
+    bad:
+        socks (knock off some ingredients)
+        trash bag (creates slipping hazards)
+        jellyfish (paralyzes catcher for a few seconds)
+        rocks (fall faster)
+        fish (knocks off next caught ingredient)
+    interactions:
+
+karate theme
+serious karate master dog makes the sandwich hitting a tomato with a sub roll and knocks ingredients down where his
+    energetic apprentice catches the toppings to score points
+
+control the master dog,
+catcher is on autopilot
+
