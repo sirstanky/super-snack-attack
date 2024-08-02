@@ -1,7 +1,6 @@
 BUGS:
 pausing still runs the clock in delta time (leaves plummet after un-pausing)
     add clock in game loop to control game delta time
-pausing won't un-pause if using the same key as pausing
 
 BALANCE:
 tune direction ball moves when hit by bat (make the ball go vertically when hit right but never horizontally)
@@ -10,7 +9,6 @@ tune direction ball moves when hit by bat (make the ball go vertically when hit 
         'skill' hit areas deflect accurately, other areas have a margin of variance
 
 CURRENT FOCUS:
-change game and menu state to stack system
 put a 'position' parameter in 'add block' for the managers
     (or move block when hit to impact position and adjust speed for current delta frame time)
 create save file that tracks score between plays

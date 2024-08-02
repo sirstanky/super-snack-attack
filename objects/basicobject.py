@@ -1,6 +1,6 @@
 from math import sqrt
 
-from pygame import draw as pgdraw, Surface
+from pygame import draw as pgdraw
 
 import constants as c
 from objects.position import Position
@@ -144,5 +144,5 @@ class BasicObject:
                *args):
         self.move()
 
-    def draw(self, window: Surface):
-        pgdraw.rect(window, self.color, self.pos.draw_rect)
+    def draw(self):
+        pgdraw.rect(c.window, self.color, self.pos.draw_rect)

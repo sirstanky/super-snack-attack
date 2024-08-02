@@ -1,5 +1,3 @@
-from pygame import Surface
-
 from blockmanagers.fallingblockmanager import FallingBlockManager
 from blockmanagers.targetmanager import TargetManager
 from objects.blocks.basicblocks.targetblock import TargetBlock
@@ -20,7 +18,6 @@ class BlockManager:
         self.target_manager.update()
         self.falling_manager.update()
 
-    def draw(self,
-             window: Surface):
-        self.target_manager.draw(window)
-        self.falling_manager.draw(window)
+    def draw(self):
+        self.target_manager.draw()
+        self.falling_manager.draw()

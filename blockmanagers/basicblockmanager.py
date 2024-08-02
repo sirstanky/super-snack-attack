@@ -1,5 +1,3 @@
-from pygame import Surface
-
 from objects.blocks.basicblocks.basicblock import BasicBlock
 
 
@@ -47,7 +45,6 @@ class BasicBlockManager:
         for block in self.get_blocks():
             block.update()
 
-    def draw(self,
-             window: Surface):
+    def draw(self):
         for block in self.get_blocks():
-            block.draw(window)
+            block.draw()

@@ -1,5 +1,3 @@
-from pygame import Surface
-
 import constants as c
 from objects.blocks.basicblocks.caughtblock import CaughtBlock
 from blockmanagers.caughtblockmanager import CaughtBlockManager
@@ -78,8 +76,7 @@ class Catcher(Paddle):
         super().update()
         update_blocks()
 
-    def draw(self,
-             window: Surface):
-        super().draw(window)
+    def draw(self):
+        super().draw()
         for block in self.caught_manager.blocks[self.get_active_blocks():]:
-            block.draw(window)
+            block.draw()

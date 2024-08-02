@@ -1,6 +1,6 @@
 from math import pi
 
-from pygame import Surface, draw as pgdraw
+import pygame as pg
 
 import constants as c
 from controls.collisions import get_intersection_point
@@ -75,7 +75,7 @@ class Bat(Paddle):
             ball.hit_by_bat(x_angle, y_angle, go_right)
 
     def update(self,
-               **kwargs):
+               keys: pg.key.ScancodeWrapper):
         def check_window_boundary():
             if self.pos.x < -(self.pos.width / 5):
                 self.pos.x = -(self.pos.width / 5)
@@ -84,17 +84,28 @@ class Bat(Paddle):
                 self.pos.x = c.window_width - ((self.pos.width / 5) * 4)
                 self.speed_x = 0
 
+        def get_acceleration():
+            accel = [0, 0]
+            if self.swing_timer.ready:
+                if keys[pg.K_UP]:
+                    accel[1] -= 1
+                if keys[pg.K_DOWN]:
+                    accel[1] += 1
+                if keys[pg.K_LEFT] and self.pos.x > -(self.pos.width / 5):
+                    accel[0] -= 1
+                if keys[pg.K_RIGHT] and self.pos.x + ((self.pos.width / 5) * 4) < c.window_width:
+                    accel[0] += 1
+            return accel[0], accel[1]
+
         self.swing_timer.update()
+        self.accelerate(get_acceleration())
         super().update()
         check_window_boundary()
         self.hit_zone.topleft = self.pos.x, self.pos.y - self.pos.width
 
-    def draw(self,
-             window: Surface):
-        pgdraw.arc(window, (255, 255, 255),
-                   (self.pos.x - self.pos.width, self.pos.y - self.pos.width, self.pos.width * 2, self.pos.width * 2),
-                   pi * 3 / 2, pi / 2, 2)
-        # pgdraw.rect(window, (75, 75, 75), self.pos.draw_rect)
-        # pgdraw.rect(window, (100, 100, 100), self.hit_zone.draw_rect)
+    def draw(self):
+        pg.draw.arc(c.window, (255, 255, 255),
+                    (self.pos.x - self.pos.width, self.pos.y - self.pos.width, self.pos.width * 2, self.pos.width * 2),
+                    pi * 3 / 2, pi / 2, 2)
         frame = 0 if self.swing_timer.ready else 1
-        self.player_sprite.draw(window, self.pos, frame)
+        self.player_sprite.draw(c.window, self.pos, frame)
