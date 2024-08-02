@@ -2,6 +2,7 @@ from math import sqrt
 
 import pygame
 
+from controls.states.state import State
 from objects.position import Position
 
 
@@ -27,7 +28,8 @@ top_window_ui_buffer = window_height * 0.056
 
 # Game
 clock: pygame.time.Clock | None = None
-FPS = 60
+FPS: int = 60
+game_state: list[State] | None = None
 
 # Ball
 ball_max_speed: float = window_diagonal * 0.0055

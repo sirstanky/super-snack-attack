@@ -1,9 +1,7 @@
 import pygame as pg
 
 import constants as c
-from controls.game import MainGame
-from controls.mainmenu import MainMenu
-from controls.pausemenu import PauseMenu
+from controls.states.mainmenu import MainMenu
 
 # Initialize pygame
 pg.init()
@@ -15,20 +13,10 @@ pg.display.set_caption("Super Snack Attack!")
 # Set up game variables
 c.clock = pg.time.Clock()
 
-game = MainGame()
-# TODO Set up call to create main game
-menu = MainMenu()
-pause = PauseMenu()
+c.game_state = [MainMenu()]
 
-running = True
-command = menu.running()
-while running:
-    if command == 'play':
-        command = game.play()
-    if command == 'paused':
-        command = pause.start()
-    if command == 'quit':
-        running = False
+while c.game_state:
+    c.game_state[-1].run()
 
 
 print("Quit with elegance")

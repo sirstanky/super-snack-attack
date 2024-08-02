@@ -1,5 +1,3 @@
-from pygame import Surface
-
 import constants as c
 from blockmanagers.gridmanager import GridManager
 from controls.timer import Timer
@@ -99,7 +97,6 @@ class TargetManager:
         for block in self.get_all_blocks():
             block.update()
 
-    def draw(self,
-             window: Surface):
+    def draw(self):
         for column in self.columns:
-            column.draw(window)
+            column.draw()

@@ -1,6 +1,6 @@
 from math import sqrt
 
-from pygame import draw as pgdraw, Surface
+from pygame import draw as pgdraw
 from pygame.mixer import Sound
 
 import constants as c
@@ -133,8 +133,7 @@ class Ball(BasicBall):
                 # return True
                 pass
 
-    def draw(self,
-             window: Surface):
+    def draw(self):
         if not self.hit_timer.ready:
-            self.hit_sprite.draw(window, self.hit_position)
-        pgdraw.circle(window, self.color, self.pos.center, self.radius)
+            self.hit_sprite.draw(c.window, self.hit_position)
+        pgdraw.circle(c.window, self.color, self.pos.center, self.radius)
