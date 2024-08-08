@@ -2,7 +2,7 @@ from math import inf
 
 import constants as c
 from objects.basicobject import BasicObject
-from objects.blocks.basicblocks.basicblock import BasicBlock
+from objects.blocks.basicblocks.block import Block
 from objects.position import Position
 
 
@@ -71,7 +71,7 @@ def check_corner_collision(intersection_point: tuple[float, float],
 
 
 def get_collision_with_closest_block(obj: BasicObject,
-                                     blocks: list[BasicBlock]):
+                                     blocks: list[Block]):
 
     closest_block = None
     closest_distance = inf

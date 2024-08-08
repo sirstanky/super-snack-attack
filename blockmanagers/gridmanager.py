@@ -1,11 +1,11 @@
 from blockmanagers.basicblockmanager import BasicBlockManager
-from objects.blocks.basicblocks.basicblock import BasicBlock
+from objects.blocks.basicblocks.block import Block
 
 
 class GridManager(BasicBlockManager):
     def __init__(self,
                  size: int = None,
-                 blocks: list[BasicBlock | None] = None):
+                 blocks: list[Block | None] = None):
         if blocks is None:
             if size is None:
                 raise Exception("GridManager not properly initialized (no size or block list provided).")
@@ -26,12 +26,12 @@ class GridManager(BasicBlockManager):
         return index
 
     def add_block_at_index(self,
-                           block: BasicBlock,
+                           block: Block,
                            index: int):
         self.set_block(block, index)
 
     def remove_block(self,
-                     block: BasicBlock):
+                     block: Block):
         try:
             self._blocks[self._blocks.index(block)] = None
             return True

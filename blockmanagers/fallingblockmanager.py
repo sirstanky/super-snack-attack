@@ -2,9 +2,9 @@ from random import random
 
 import constants as c
 from blockmanagers.basicblockmanager import BasicBlockManager
-from objects.blocks.basicblocks.basicblock import BasicBlock
+from objects.blocks.basicblocks.block import Block
 from objects.blocks.basicblocks.fallingblock import FallingBlock
-from objects.blocks.floatingblock import FloatingBlock
+from objects.blocks.lettuce import Lettuce
 
 
 class FallingBlockManager(BasicBlockManager):
@@ -13,12 +13,12 @@ class FallingBlockManager(BasicBlockManager):
         super().__init__(blocks=blocks)
 
     def add_block(self,
-                  block: BasicBlock,
+                  block: Block,
                   index: int = None):
         if random() < 0.5:
             new_block = FallingBlock(block.pos.center, block.pos.size, block.color, speed=block.speed)
         else:
-            new_block = FloatingBlock(block.pos.center, block.pos.size, block.color)
+            new_block = Lettuce(block.pos.center, block.pos.size)
         super().add_block(new_block)
 
     def get_lowest_block(self,

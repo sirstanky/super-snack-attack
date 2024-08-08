@@ -1,7 +1,7 @@
 from random import randint
 
 import constants as c
-from objects.blocks.basicblocks.basicblock import BasicBlock
+from objects.blocks.basicblocks.block import Block
 
 
 def random_color():
@@ -11,7 +11,7 @@ def random_color():
     return r, g, b
 
 
-class TargetBlock(BasicBlock):
+class TargetBlock(Block):
     def __init__(self,
                  center: tuple[float, float],
                  size: tuple[float, float],

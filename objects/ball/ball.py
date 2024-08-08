@@ -8,7 +8,7 @@ from blockmanagers.blockmanager import BlockManager
 from controls.timer import Timer
 from objects.ball.basicball import BasicBall
 from objects.position import Position
-from sprites.sprite import Sprite
+from sprites.spritesheet import SpriteSheet
 
 
 class Ball(BasicBall):
@@ -20,6 +20,7 @@ class Ball(BasicBall):
                  speed_y: float = None,
                  going_right: bool = True,
                  going_up: bool = True):
+
         if width is None:
             width = c.ball_width
         if center is None:
@@ -34,12 +35,13 @@ class Ball(BasicBall):
                 speed_x = 0.0
             else:
                 speed_y = 0.0
-        color = (255, 255, 255)
 
-        super().__init__(center,
-                         width,
-                         color,
-                         max_speed,
+        sprite = SpriteSheet('assets/tomato.png', (width, width), (16, 16), [1])
+
+        super().__init__(center=center,
+                         width=width,
+                         sprite_sheet=sprite,
+                         max_speed=max_speed,
                          speed_x=speed_x,
                          speed_y=speed_y,
                          going_right=going_right,

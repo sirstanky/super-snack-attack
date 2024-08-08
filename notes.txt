@@ -1,14 +1,21 @@
 BUGS:
 pausing still runs the clock in delta time (leaves plummet after un-pausing)
     add clock in game loop to control game delta time
+pause is janky because game updates after pause is initiated?
 
 BALANCE:
+change sprite sizes based on window diagonal instead of width
+    bat is ridiculously huge on different aspect ratios
 tune direction ball moves when hit by bat (make the ball go vertically when hit right but never horizontally)
     MUCH CLOSER WITH THIS, STILL DOESN'T FEEL QUITE RIGHT
     hard code angles at certain hit areas?
         'skill' hit areas deflect accurately, other areas have a margin of variance
 
 CURRENT FOCUS:
+started butchering classes and rewriting for sprites
+    combined all blocks into one block class to be extended
+    need to create placeholder sprites for all objects
+    get rid of block managers and have one manager to rule them all
 put a 'position' parameter in 'add block' for the managers
     (or move block when hit to impact position and adjust speed for current delta frame time)
 create save file that tracks score between plays

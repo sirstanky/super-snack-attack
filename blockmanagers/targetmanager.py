@@ -35,7 +35,6 @@ class TargetManager:
             TargetBlock(self.grid_positions[x][y], self.block_size) for y in range(rows)]) for x in range(columns)]
 
         self.block_drop_timers: dict[Timer, int] = {}
-        self.aligned = True
 
     def get_all_blocks(self):
         all_blocks: list[TargetBlock] = []

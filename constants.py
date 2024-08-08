@@ -40,7 +40,7 @@ boundary_size = window_width, window_height - top_window_ui_buffer
 ball_boundary: Position = Position(boundary_center, boundary_size)
 
 # Bat
-bat_width: float = window_width * 0.15
+bat_width: float = window_diagonal * 0.0735
 bat_size: tuple[float, float] = (bat_width, bat_width * 2)
 bat_max_speed: float = window_width * 0.017  # = 6.0
 bat_acceleration: float = window_width * 0.0006  # = 0.1

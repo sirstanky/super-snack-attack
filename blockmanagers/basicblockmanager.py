@@ -1,11 +1,11 @@
-from objects.blocks.basicblocks.basicblock import BasicBlock
+from objects.blocks.basicblocks.block import Block
 
 
 class BasicBlockManager:
     def __init__(self,
-                 blocks: list[BasicBlock] = None):
+                 blocks: list[Block] = None):
         if blocks is None:
-            self._blocks: list[BasicBlock] = []
+            self._blocks: list[Block] = []
         else:
             self._blocks = blocks
 
@@ -21,23 +21,23 @@ class BasicBlockManager:
         return self._blocks[index]
 
     def get_block_position(self,
-                           block: BasicBlock):
+                           block: Block):
         try:
             return self._blocks.index(block)
         except ValueError:
             return False
 
     def set_block(self,
-                  block: BasicBlock,
+                  block: Block,
                   index: int):
         self._blocks[index] = block
 
     def add_block(self,
-                  block: BasicBlock):
+                  block: Block):
         self._blocks.append(block)
 
     def remove_block(self,
-                     block: BasicBlock):
+                     block: Block):
         self._blocks.remove(block)
 
     def update(self,

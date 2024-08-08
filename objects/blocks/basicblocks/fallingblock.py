@@ -1,17 +1,19 @@
 from pygame import Rect
 
 import constants as c
-from objects.blocks.basicblocks.basicblock import BasicBlock
+from objects.blocks.basicblocks.block import Block
+from sprites.sprite import Sprite
 
 
-class FallingBlock(BasicBlock):
+class FallingBlock(Block):
     def __init__(self,
                  center: tuple[float, float],
                  size: tuple[float, float],
                  color: tuple[int, int, int],
                  max_speed: float = None,
                  speed: tuple[float, float] = None,
-                 acceleration: float = None):
+                 acceleration: float = None,
+                 sprite_sheet: Sprite = None):
         if max_speed is None:
             max_speed = c.falling_block_speed
         if speed is None:
@@ -24,7 +26,8 @@ class FallingBlock(BasicBlock):
                          color,
                          max_speed,
                          speed=speed,
-                         acceleration=acceleration)
+                         acceleration=acceleration,
+                         sprite_sheet=sprite_sheet)
 
     @property
     def catch_area(self):

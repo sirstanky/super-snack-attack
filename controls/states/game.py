@@ -73,7 +73,7 @@ class MainGame(State):
 
     def update_game(self):
         if self.bat.swing_timer.ready:
-            if self.keys[pg.K_SPACE] and not self.prev_keys[pg.K_SPACE]:
+            if self.keys[pg.K_SPACE]:
                 self.bat.swing(self.ball)
         self.bat.update(self.keys)
         # This will be True if the ball hits the bottom of the window

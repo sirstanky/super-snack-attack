@@ -108,4 +108,4 @@ class Bat(Paddle):
                     (self.pos.x - self.pos.width, self.pos.y - self.pos.width, self.pos.width * 2, self.pos.width * 2),
                     pi * 3 / 2, pi / 2, 2)
         frame = 0 if self.swing_timer.ready else 1
-        self.player_sprite.draw(c.window, self.pos, frame)
+        self.player_sprite.draw(self.pos, frame)

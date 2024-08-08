@@ -1,27 +1,21 @@
 from math import sqrt
 
-from pygame import draw as pgdraw
-
 import constants as c
 from objects.position import Position
+from sprites.spritesheet import SpriteSheet
 
 
 class BasicObject:
     def __init__(self,
                  center: tuple[float, float],
                  size: tuple[float, float],
-                 color: tuple[int, int, int],
+                 sprite_sheet: SpriteSheet,
                  max_speed: float,
-                 speed: tuple[float, float] = None,
-                 acceleration: float = 1.0):
-        if speed is None:
-            speed = (0.0, 0.0)
-        if c.get_distance(speed[0], speed[1]) > max_speed:
-            raise Exception("Speed set higher than max speed.")
+                 speed: tuple[float, float],
+                 acceleration: float):
 
         self._pos = Position(center, size)
-        # TODO Eventually we will phase out 'color' for sprites.
-        self.color = color
+        self._sprite = sprite_sheet
         self._max_speed = max_speed
         self._speed = list(speed)
         self._acceleration = acceleration
@@ -34,6 +28,10 @@ class BasicObject:
     def pos(self,
             new_center: tuple[float, float]):
         self._pos.center = new_center
+
+    @property
+    def sprite(self):
+        return self._sprite
 
     @property
     def speed(self):
@@ -142,7 +140,8 @@ class BasicObject:
 
     def update(self,
                *args):
+        self.cap_speed()
         self.move()
 
     def draw(self):
-        pgdraw.rect(c.window, self.color, self.pos.draw_rect)
+        self._sprite.draw(self.pos)

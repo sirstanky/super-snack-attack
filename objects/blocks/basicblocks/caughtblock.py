@@ -1,7 +1,7 @@
-from objects.blocks.basicblocks.basicblock import BasicBlock
+from objects.blocks.basicblocks.block import Block
 
 
-class CaughtBlock(BasicBlock):
+class CaughtBlock(Block):
     def __init__(self,
                  center: tuple[float, float],
                  size: tuple[float, float],
