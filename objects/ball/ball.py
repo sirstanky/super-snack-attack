@@ -35,7 +35,7 @@ class Ball(BasicBall):
             else:
                 speed_y = 0.0
 
-        sprite = SpriteSheet('assets/tomato.png', (width, width), (16, 16), [1])
+        sprite = SpriteSheet('assets/tomato.png', (width, width), (16, 16), [16])
 
         super().__init__(center=center,
                          width=width,

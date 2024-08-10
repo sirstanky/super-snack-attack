@@ -35,7 +35,8 @@ class Sprite:
         if frame is None:
             frame = self.cur_frame
             self.frame_tick += 1
-            if self.frame_tick > 8:
+            if self.frame_tick > 1:  # TODO Pass 'animation time' as a parameter or create constant
                 self.advance_frame()
+                self.frame_tick = 0
         image = self.image.subsurface((self.draw_size[0] * frame, 0, self.draw_size[0], self.draw_size[1]))
         c.window.blit(image, (position.left, position.top))

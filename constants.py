@@ -59,7 +59,7 @@ target_block_acceleration: float = falling_block_acceleration
 caught_block_size: tuple[float, float] = (catcher_size[0] * 1.1, max(catcher_size[1] / 4, 1))
 floating_block_swing_distance: float = window_width / 8
 floating_block_drop_distance: float = window_height / 10
-floating_block_speed: float = 1
+floating_block_speed: float = 1.0
 
 # Block managers
 caught_blocks_display_limit: int = 20

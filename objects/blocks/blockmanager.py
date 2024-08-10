@@ -13,6 +13,16 @@ block_table = [
 ]
 
 
+def choose_block():
+    selection_value = random()
+    block_choice = block_table[0][1]
+    for weight, block in block_table:
+        if selection_value < weight:
+            block_choice = block
+            break
+    return block_choice
+
+
 class BlockManager:
     def __init__(self,
                  grid_size: tuple[int, int]):
@@ -43,7 +53,7 @@ class BlockManager:
         self.block_size = find_block_size()
         self.target_positions, self.drop_positions = find_target_and_drop_positions()
         self.drop_block_timers: list[tuple[Timer, int]] = []
-        self.target_blocks: list[list[Block | None]] = [[Cheese(self.target_positions[x][y], self.block_size)
+        self.target_blocks: list[list[Block | None]] = [[choose_block()(self.target_positions[x][y], self.block_size)
                                                         for y in range(self.target_rows)]
                                                         for x in range(self.target_columns)]
         self.falling_blocks: list[Block] = []
@@ -79,12 +89,7 @@ class BlockManager:
                          grid_coordinates: tuple[int, int],
                          creation_position: tuple[int, int],
                          y_destination: float = None):
-        selection_value = random()
-        block_choice = block_table[0][1]
-        for weight, block in block_table:
-            if selection_value < weight:
-                block_choice = block
-                break
+        block_choice = choose_block()
         new_block = block_choice(creation_position, self.block_size, y_destination=y_destination)
         self.target_blocks[grid_coordinates[0]][grid_coordinates[1]] = new_block
 
