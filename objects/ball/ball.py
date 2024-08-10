@@ -3,7 +3,7 @@ from math import sqrt
 from pygame.mixer import Sound
 
 import constants as c
-from blockmanagers.blockmanager import BlockManager
+from objects.blocks.blockmanager import BlockManager
 from controls.timer import Timer
 from objects.ball.basicball import BasicBall
 from objects.position import Position

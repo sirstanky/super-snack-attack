@@ -4,7 +4,7 @@ import constants as c
 from controls.states.state import State
 from controls.states.pausemenu import PauseMenu
 from objects.ball.ball import Ball
-from blockmanagers.blockmanager import BlockManager
+from objects.blocks.blockmanager import BlockManager
 from objects.paddle.bat import Bat
 from ui.ui import UI
 

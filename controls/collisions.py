@@ -2,7 +2,7 @@ from math import inf
 
 import constants as c
 from objects.basicobject import BasicObject
-from objects.blocks.basicblocks.block import Block
+from objects.blocks.block import Block
 from objects.position import Position
 
 

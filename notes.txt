@@ -1,4 +1,7 @@
 BUGS:
+catcher is not catching
+lettuce falls more heavily than cheese in target area
+lettuce float has a jagged bounce on the first swing
 pausing still runs the clock in delta time (leaves plummet after un-pausing)
     add clock in game loop to control game delta time
 pause is janky because game updates after pause is initiated?

@@ -46,18 +46,17 @@ class Block(BasicObject):
                      *args):
         # TODO Change sprites here
         if state == Block.State.TARGET:
+            self.state = state
             if args:
                 self.y_destination = args[0]
-                # TODO Pass in size parameter
-            pass
         elif state == Block.State.FALLING:
-            pass
+            self.state = state
         elif state == Block.State.CAUGHT:
-            self.pos.size = c.caught_block_size
+            self.state = state
 
     def update(self,
                **kwargs):
-        if self.state.value == Block.State.TARGET:
+        if self.state.value == Block.State.TARGET.value:
             if self.y_destination is not None:
                 self.accelerate((0, 1))
                 self.move()
@@ -66,13 +65,13 @@ class Block(BasicObject):
                     self.y_destination = None
                     self.speed_y = 0.0
 
-        elif self.state.value == Block.State.FALLING:
+        elif self.state.value == Block.State.FALLING.value:
             self.accelerate((0, 1))
             self.move()
 
-        elif self.state.value == Block.State.CAUGHT:
-            self.pos.x = kwargs['catcher_position'][0]
-            self.pos.y = kwargs['catcher_position'][1] - c.caught_block_size[1] * (kwargs['layer'] + 1)
+        elif self.state.value == Block.State.CAUGHT.value:
+            self.pos.x = kwargs['catcher_position'].x
+            self.pos.y = kwargs['catcher_position'].y - c.caught_block_size[1] * kwargs['layer'] - self.pos.height / 2
 
     # TODO This will have to be written to handle different sprite states and animations
     def draw(self):

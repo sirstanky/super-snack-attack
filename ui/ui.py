@@ -3,7 +3,7 @@ from pygame.font import Font
 
 import constants as c
 from objects.paddle.bat import Bat
-from blockmanagers.blockmanager import BlockManager
+from objects.blocks.blockmanager import BlockManager
 
 
 class UI:
@@ -28,7 +28,8 @@ class UI:
     def draw_score(self,
                    block_manager: BlockManager,
                    window: Surface):
-        score = self.font.render(f'Score: {len(block_manager.caught_blocks) * 10}', True, (255, 255, 255))
+        score = sum([_.score_value for _ in block_manager.caught_blocks])
+        score = self.font.render(f'Score: {score}', True, (255, 255, 255))
         rect = score.get_rect()
         rect.x, rect.y = 1, 1
         window.blit(score, rect)

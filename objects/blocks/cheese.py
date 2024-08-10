@@ -1,5 +1,5 @@
 import constants as c
-from objects.blocks.basicblocks.block import Block
+from objects.blocks.block import Block
 from sprites.spritesheet import SpriteSheet
 
 
@@ -22,7 +22,7 @@ class Cheese(Block):
             score_value = 10  # TODO Move this to 'constants'
 
         # TODO Load sprite
-        sprite = SpriteSheet('assets/cheese.png', size, (32, 32), [1])
+        sprite = SpriteSheet('assets/cheese.png', size, (32, 32), [1, 1, 1])
 
         super().__init__(center=center,
                          size=size,

@@ -2,7 +2,7 @@ from math import pi, sin
 from random import random
 
 import constants as c
-from objects.blocks.basicblocks.block import Block
+from objects.blocks.block import Block
 from sprites.spritesheet import SpriteSheet
 
 
@@ -20,7 +20,7 @@ class Lettuce(Block):
                  drop_distance: float = None):
 
         if max_speed is None:
-            max_speed = c.floating_block_speed
+            max_speed = c.falling_block_speed
         if score_value is None:
             score_value = 30  # TODO Move to 'constants'
         if swing_distance is None:
@@ -28,7 +28,7 @@ class Lettuce(Block):
         if drop_distance is None:
             drop_distance = c.floating_block_drop_distance
 
-        sprite_sheet = SpriteSheet('assets/lettuce.png', size, (32, 32), [16])
+        sprite_sheet = SpriteSheet('assets/lettuce.png', size, (32, 32), [1, 1, 1])
 
         super().__init__(center=center,
                          size=size,
@@ -44,9 +44,9 @@ class Lettuce(Block):
         self.drop_distance = drop_distance
         self.swing_height_limit = self.pos.y
         self.center_line = self.pos.x
+        self.swing_count = 0
         self.reversal_time = self.find_reversal_time()
         self.float_time = 0
-        self.swing_count = 0
         if random() < 0.5:
             self.para_start = self.left_swing - self.quarter_swing
             self.para_end = self.center_line
@@ -68,7 +68,13 @@ class Lettuce(Block):
     def left_swing(self):
         return self.center_line - self.swing_distance
 
-    @property
+    def change_state(self,
+                     state: Block.State,
+                     *args):
+        if state == Block.State.FALLING:
+            self.max_speed = c.floating_block_speed
+        super().change_state(state)
+
     def find_reversal_time(self):
         return (1 / (pi * self.max_speed)) * ((pi / 2) + (self.swing_count * pi))
 
@@ -92,12 +98,17 @@ class Lettuce(Block):
         amp = self.drop_distance / ((vertex - self.para_start) * (vertex - self.para_end))
         self.pos.y = amp * (self.pos.x - self.para_start) * (self.pos.x - self.para_end) + self.swing_height_limit
 
-    def update(self):
-        if self.state.value == Block.State.TARGET:
+    def update(self,
+               **kwargs):
+        if self.state.value == Block.State.TARGET.value:
+            self.swing_height_limit = self.pos.y
             super().update()
-        elif self.state.value == Block.State.FALLING:
+        elif self.state.value == Block.State.FALLING.value:
             self.update_fall()
-        elif self.state.value == Block.State.CAUGHT:
-            super().update()
+        elif self.state.value == Block.State.CAUGHT.value:
+            super().update(catcher_position=kwargs['catcher_position'], layer=kwargs['layer'])
+            
+    def draw(self):
+        super().draw()
 
 

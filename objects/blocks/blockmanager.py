@@ -1,7 +1,7 @@
 from random import random
 
 import constants as c
-from objects.blocks.basicblocks.block import Block
+from objects.blocks.block import Block
 from objects.blocks.cheese import Cheese
 from objects.blocks.lettuce import Lettuce
 from objects.paddle.catcher import Catcher
@@ -43,13 +43,19 @@ class BlockManager:
         self.block_size = find_block_size()
         self.target_positions, self.drop_positions = find_target_and_drop_positions()
         self.drop_block_timers: list[tuple[Timer, int]] = []
-        self.target_blocks: list[list[Block]] = [[Cheese(self.target_positions[x][y], self.block_size)
-                                                 for y in range(self.target_rows)]
-                                                 for x in range(self.target_columns)]
+        self.target_blocks: list[list[Block | None]] = [[Cheese(self.target_positions[x][y], self.block_size)
+                                                        for y in range(self.target_rows)]
+                                                        for x in range(self.target_columns)]
         self.falling_blocks: list[Block] = []
         self.caught_blocks: list[Block] = []
 
         self.catcher = Catcher()
+
+    @property
+    def catch_area(self):
+        if self.caught_blocks:
+            return self.caught_blocks[-1].pos
+        return self.catcher.pos
 
     def get_all_target_blocks(self):
         target_blocks = []
@@ -72,9 +78,9 @@ class BlockManager:
     def add_target_block(self,
                          grid_coordinates: tuple[int, int],
                          creation_position: tuple[int, int],
-                         y_destination: tuple[float, float] = None):
+                         y_destination: float = None):
         selection_value = random()
-        block_choice = block_table[-1][1]
+        block_choice = block_table[0][1]
         for weight, block in block_table:
             if selection_value < weight:
                 block_choice = block
@@ -93,17 +99,18 @@ class BlockManager:
         return index
 
     def target_hit_by_ball(self,
-                           block: Block):
-        for col_num, column in enumerate(self.target_blocks):
-            if block in column:
-                column.remove(block)
-                timer = Timer(c.target_manager_drop_delay)
-                self.drop_block_timers.append((timer, col_num))
-                timer.start()
-                self.shift_blocks_down(col_num)
-                self.falling_blocks.append(block)
-                block.change_state(Block.State.FALLING)
-                break
+                           target_block: Block):
+        for column, blocks in enumerate(self.target_blocks):
+            for row, block in enumerate(blocks):
+                if block == target_block:
+                    self.target_blocks[column][row] = None
+                    timer = Timer(c.target_manager_drop_delay)
+                    self.drop_block_timers.append((timer, column))
+                    timer.start()
+                    self.shift_blocks_down(column)
+                    self.falling_blocks.append(block)
+                    block.change_state(Block.State.FALLING)
+                    return
 
     def shift_blocks_down(self,
                           column: int):
@@ -116,7 +123,7 @@ class BlockManager:
         self.target_blocks[column] = nones + blocks
         for block in self.get_target_blocks_in_column(column):
             x, y = self.get_target_block_coordinate(block)
-            block.y_destination = self.drop_positions[x][y][1]
+            block.y_destination = self.target_positions[x][y][1]
 
     def get_lowest_falling_block(self):
         cut_off_y = self.catcher.pos.y if not self.caught_blocks else self.caught_blocks[-1].pos.bottom
@@ -129,31 +136,41 @@ class BlockManager:
         return lowest_block
 
     def update(self):
-        for timer, column in self.drop_block_timers:
-            timer.update()
-            row = self.get_first_none(column)
-            if row is not None and timer.expired:
-                self.add_target_block((column, row), self.drop_positions[column][row],
-                                      y_destination=self.target_positions[column][row])
-                self.drop_block_timers.remove((timer, column))
+        def update_timers():
+            for timer, column in self.drop_block_timers:
+                timer.update()
+                row = self.get_first_none(column)
+                if row is not None and timer.expired:
+                    self.add_target_block((column, row), self.drop_positions[column][row],
+                                          y_destination=self.target_positions[column][row][1])
+                    self.drop_block_timers.remove((timer, column))
+
+        def update_catcher():
+            accelerate = (0, 0)
+            lowest_block = self.get_lowest_falling_block()
+            if lowest_block:
+                if not lowest_block.pos.left < self.catcher.pos.x < lowest_block.pos.right:
+                    if self.catcher.pos.x < lowest_block.pos.left:
+                        accelerate = (1, 0)
+                    else:
+                        accelerate = (-1, 0)
+            self.catcher.accelerate(accelerate)
+            self.catcher.update()
+
+        update_timers()
         for block in self.get_all_target_blocks():
             block.update()
+        update_catcher()
         for block in self.falling_blocks:
             block.update()
+            if block.pos.collides_with_position(self.catch_area):
+                self.falling_blocks.remove(block)
+                self.caught_blocks.append(block)
+                block.change_state(Block.State.CAUGHT)
             if block.pos.top > c.window_height:
                 self.falling_blocks.remove(block)
-        lowest_block = self.get_lowest_falling_block()
-        accelerate = (0, 0)
-        if lowest_block:
-            if not lowest_block.pos.left < self.catcher.pos.x < lowest_block.pos.right:
-                if self.catcher.pos.x < lowest_block.pos.left:
-                    accelerate = (1, 0)
-                else:
-                    accelerate = (-1, 0)
-        self.catcher.accelerate(accelerate)
-        self.catcher.update()
-        for index, block in self.caught_blocks:
-            block.update(cather_position=self.catcher.pos, layer=index)
+        for index, block in enumerate(self.caught_blocks):
+            block.update(catcher_position=self.catcher.pos, layer=index)
 
     def draw(self):
         self.catcher.draw()
