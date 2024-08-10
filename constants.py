@@ -27,7 +27,7 @@ window_diagonal: float = get_distance(window_width, window_height)  # 734.4 @ wi
 top_window_ui_buffer = window_height * 0.056
 
 # Game
-clock: pygame.time.Clock | None = None
+clock = None
 FPS: int = 60
 game_state: list[State] | None = None
 
@@ -58,7 +58,7 @@ catcher_acceleration: float = window_width * 0.00007
 # Blocks
 falling_block_speed: float = window_height * 0.00625  # = 4
 falling_block_acceleration: float = window_height * 0.000156
-floating_block_speed: float = 1.0
+floating_block_speed: float = 1.5
 floating_block_acceleration: float = falling_block_acceleration / 10
 floating_block_swing_distance: float = window_width / 8
 floating_block_drop_distance: float = window_height / 10
