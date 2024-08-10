@@ -2,6 +2,7 @@ import pygame as pg
 
 import constants as c
 from controls.states.game import MainGame
+from controls.states.mainmenu import MainMenu
 
 # Initialize pygame
 pg.init()
@@ -14,7 +15,7 @@ pg.display.set_caption("Super Snack Attack!")
 c.clock = pg.time.Clock()
 
 # TODO Switch to MainMenu()
-c.game_state = [MainGame()]
+c.game_state = [MainMenu()]
 
 while c.game_state:
     c.game_state[-1].run()
