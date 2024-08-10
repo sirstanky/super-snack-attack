@@ -17,7 +17,7 @@ class SpriteSheet:
         self.image = image
         self.sprites = []
         for row, num_frames in enumerate(frames):
-            sub_image = self.image.subsurface((0, draw_size[1] * row, draw_size[0], draw_size[1] * num_frames))
+            sub_image = self.image.subsurface((0, draw_size[1] * row, draw_size[0] * num_frames, draw_size[1]))
             self.sprites.append(Sprite(sub_image, draw_size, num_frames))
 
     def draw(self,

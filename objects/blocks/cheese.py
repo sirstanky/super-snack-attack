@@ -1,5 +1,5 @@
 import constants as c
-from basicblocks.block import Block
+from objects.blocks.basicblocks.block import Block
 from sprites.spritesheet import SpriteSheet
 
 

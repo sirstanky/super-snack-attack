@@ -8,33 +8,25 @@ from controls.timer import Timer
 from objects.ball.ball import Ball
 from objects.paddle.paddle import Paddle
 from objects.position import Position
-from sprites.sprite import Sprite
+from sprites.spritesheet import SpriteSheet
 
 
 class Bat(Paddle):
     def __init__(self,
-                 center: tuple[float, float] = None,
-                 size: tuple[float, float] = None,
-                 color: tuple[int, int, int] = (0, 0, 255),
-                 max_speed: float = None,
-                 acceleration: float = None):
-        if center is None:
-            center = (c.window_width / 2, c.window_height * 0.75)
-        if size is None:
-            size = c.bat_size
-        if max_speed is None:
-            max_speed = c.bat_max_speed
-        if acceleration is None:
-            acceleration = c.bat_acceleration
+                 center: tuple[float, float] = (c.window_width / 2, c.window_height * 0.75),
+                 size: tuple[float, float] = c.bat_size,
+                 max_speed: float = c.bat_max_speed,
+                 speed: tuple[float, float] = (0.0, 0.0),
+                 acceleration: float = c.bat_acceleration):
 
-        super().__init__(center,
-                         size,
-                         color,
-                         max_speed,
-                         acceleration)
+        super().__init__(center=center,
+                         size=size,
+                         sprite_sheet=SpriteSheet('assets/player.png', size, (27, 54), [2]),
+                         max_speed=max_speed,
+                         speed=speed,
+                         acceleration=acceleration)
 
         self.swing_timer = Timer(c.bat_swing_pause)
-        self.player_sprite = Sprite('assets/player.png', self.pos.size, (0, 0), 2)
 
     @property
     def hit_zone(self):
@@ -108,4 +100,4 @@ class Bat(Paddle):
                     (self.pos.x - self.pos.width, self.pos.y - self.pos.width, self.pos.width * 2, self.pos.width * 2),
                     pi * 3 / 2, pi / 2, 2)
         frame = 0 if self.swing_timer.ready else 1
-        self.player_sprite.draw(self.pos, frame)
+        self.sprite.draw(self.pos, 0, frame)

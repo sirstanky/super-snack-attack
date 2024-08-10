@@ -1,5 +1,7 @@
+from __future__ import annotations
 from enum import Enum
 
+import constants as c
 from objects.basicobject import BasicObject
 from sprites.spritesheet import SpriteSheet
 from objects.position import Position
@@ -39,6 +41,20 @@ class Block(BasicObject):
     def catch_area(self):
         return Position((self.pos.x, self.pos.y + self.pos.height / 4), (self.pos.width, self.pos.height / 2))
 
+    def change_state(self,
+                     state: Block.State,
+                     *args):
+        # TODO Change sprites here
+        if state == Block.State.TARGET:
+            if args:
+                self.y_destination = args[0]
+                # TODO Pass in size parameter
+            pass
+        elif state == Block.State.FALLING:
+            pass
+        elif state == Block.State.CAUGHT:
+            self.pos.size = c.caught_block_size
+
     def update(self,
                **kwargs):
         if self.state.value == Block.State.TARGET:
@@ -55,8 +71,9 @@ class Block(BasicObject):
             self.move()
 
         elif self.state.value == Block.State.CAUGHT:
-            self.pos.center = kwargs['caught_position']
+            self.pos.x = kwargs['catcher_position'][0]
+            self.pos.y = kwargs['catcher_position'][1] - c.caught_block_size[1] * (kwargs['layer'] + 1)
 
     # TODO This will have to be written to handle different sprite states and animations
     def draw(self):
-        self.sprite.draw(self.pos.center, self.state.value)
+        self.sprite.draw(self.pos, self.state.value)
