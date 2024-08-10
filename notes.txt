@@ -1,8 +1,13 @@
 BUGS:
+caught blocks draw too small (width-wise)
+exporting sprites makes them not draw (shows invisible)
 pausing still runs the clock in delta time (leaves plummet after un-pausing)
     add clock in game loop to control game delta time
+pause is janky because game updates after pause is initiated?
 
 BALANCE:
+change sprite sizes based on window diagonal instead of width
+    bat is ridiculously huge on different aspect ratios
 tune direction ball moves when hit by bat (make the ball go vertically when hit right but never horizontally)
     MUCH CLOSER WITH THIS, STILL DOESN'T FEEL QUITE RIGHT
     hard code angles at certain hit areas?
@@ -13,7 +18,6 @@ put a 'position' parameter in 'add block' for the managers
     (or move block when hit to impact position and adjust speed for current delta frame time)
 create save file that tracks score between plays
     add ability to reset score
-create different kinds of target blocks for scoring mechanics and color code them
 implement corner collision checks
 
 add sprites
@@ -44,17 +48,18 @@ ingredients:
         sub roll (basic)
         baguette (heavy hits speed up ball and break multiple spots)
     good:
-        lettuce
-        pickles
-        cheese
-        onions
-        green peppers
+        lettuce - drifts down like a leaf
+        pickles - pops into multiple blocks to catch
+        cheese - falls straight down
+        onions - falls slowly and needs to be hit again by the ball or the bat to dice, or it bounces off and falls
+        green peppers - takes multiple hits to slice up before falling
+        bacon - power up hits make bacon crispy and worth more points
     bad:
         socks (knock off some ingredients)
         trash bag (creates slipping hazards)
         jellyfish (paralyzes catcher for a few seconds)
-        rocks (fall faster)
-        fish (knocks off next caught ingredient)
+        rocks (falls fast and weighs down sandwich until next ingredient is caught, removes rock and ingredient)
+        fish (knocks off next caught ingredient and ingredient caught prior to the fish)
     interactions:
 
 karate theme

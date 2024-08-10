@@ -3,8 +3,7 @@ from pygame.font import Font
 
 import constants as c
 from objects.paddle.bat import Bat
-from objects.paddle.catcher import Catcher
-from blockmanagers.targetmanager import TargetManager
+from objects.blocks.blockmanager import BlockManager
 
 
 class UI:
@@ -14,11 +13,11 @@ class UI:
 
     def draw_debug_status(self,
                           bat: Bat,
-                          target_manager: TargetManager,
+                          block_manager: BlockManager,
                           window: Surface):
         bat_speed_x = self.font.render(f'Bat x speed: {bat.speed_x:.2f}', True, (255, 255, 255))
         bat_speed_y = self.font.render(f'Bat y speed: {bat.speed_y:.2f}', True, (255, 255, 255))
-        speed = self.font.render(f'Target timers: {len(target_manager.block_drop_timers)}', True,
+        speed = self.font.render(f'Target timers: {len(block_manager.drop_block_timers)}', True,
                                  (255, 255, 255))
         for index, _ in enumerate((speed, bat_speed_y, bat_speed_x)):
             text_rect = _.get_rect()
@@ -27,17 +26,17 @@ class UI:
             window.blit(_, text_rect)
 
     def draw_score(self,
-                   catcher: Catcher,
+                   block_manager: BlockManager,
                    window: Surface):
-        score = self.font.render(f'Score: {len(catcher.caught_manager.blocks) * 10}', True, (255, 255, 255))
+        score = sum([_.score_value for _ in block_manager.caught_blocks])
+        score = self.font.render(f'Score: {score}', True, (255, 255, 255))
         rect = score.get_rect()
         rect.x, rect.y = 1, 1
         window.blit(score, rect)
 
     def draw(self,
              bat: Bat,
-             catcher: Catcher,
-             target_manager: TargetManager,
+             block_manager: BlockManager,
              window: Surface):
-        self.draw_debug_status(bat, target_manager, window)
-        self.draw_score(catcher, window)
+        self.draw_debug_status(bat, block_manager, window)
+        self.draw_score(block_manager, window)

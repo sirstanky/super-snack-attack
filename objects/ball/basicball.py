@@ -1,15 +1,17 @@
 from objects.basicobject import BasicObject
 from objects.position import Position
+from sprites.spritesheet import SpriteSheet
 
 
 class BasicBall(BasicObject):
     def __init__(self,
                  center: tuple[float, float],
                  width: float,
-                 color: tuple[int, int, int],
+                 sprite_sheet: SpriteSheet,
                  max_speed: float,
                  speed_x: float = None,
                  speed_y: float = None,
+                 acceleration: float = 1.0,
                  going_up: bool = True,
                  going_right: bool = True):
         if speed_x is not None and speed_y is None:
@@ -18,14 +20,15 @@ class BasicBall(BasicObject):
             speed_x = self.get_other_vector(speed_y)
         elif speed_x is None and speed_y is None:
             speed_x, speed_y = 0.0, 0.0
-        speed_x *= 1 if going_right else -1
-        speed_y *= -1 if going_up else 1
+        speed_x = abs(speed_x) if going_right else -abs(speed_x)
+        speed_y = -abs(speed_y) if going_up else abs(speed_y)
 
-        super().__init__(center,
-                         (width, width),
-                         color,
-                         max_speed,
-                         speed=(speed_x, speed_y))
+        super().__init__(center=center,
+                         size=(width, width),
+                         sprite_sheet=sprite_sheet,
+                         max_speed=max_speed,
+                         speed=(speed_x, speed_y),
+                         acceleration=acceleration)
 
         self.radius = self.pos.width / 2
 

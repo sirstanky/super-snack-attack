@@ -1,14 +1,13 @@
 from math import sqrt
 
-from pygame import draw as pgdraw
 from pygame.mixer import Sound
 
 import constants as c
-from blockmanagers.blockmanager import BlockManager
+from objects.blocks.blockmanager import BlockManager
 from controls.timer import Timer
 from objects.ball.basicball import BasicBall
 from objects.position import Position
-from sprites.sprite import Sprite
+from sprites.spritesheet import SpriteSheet
 
 
 class Ball(BasicBall):
@@ -20,6 +19,7 @@ class Ball(BasicBall):
                  speed_y: float = None,
                  going_right: bool = True,
                  going_up: bool = True):
+
         if width is None:
             width = c.ball_width
         if center is None:
@@ -34,12 +34,13 @@ class Ball(BasicBall):
                 speed_x = 0.0
             else:
                 speed_y = 0.0
-        color = (255, 255, 255)
 
-        super().__init__(center,
-                         width,
-                         color,
-                         max_speed,
+        sprite = SpriteSheet('assets/tomato.png', (width, width), (16, 16), [16])
+
+        super().__init__(center=center,
+                         width=width,
+                         sprite_sheet=sprite,
+                         max_speed=max_speed,
                          speed_x=speed_x,
                          speed_y=speed_y,
                          going_right=going_right,
@@ -47,8 +48,7 @@ class Ball(BasicBall):
 
         self.hit_timer = Timer(0.25)
         self.hit_position = Position(self.pos.center, self.pos.size)
-        self.hit_sprite = Sprite('assets/ball_hit.png', (self.pos.width * 2, self.pos.height * 2),
-                                 (-self.pos.width / 2, -self.pos.height / 2))
+        self.hit_sprite = SpriteSheet('assets/ball_hit.png', (self.pos.width * 2, self.pos.height * 2), (32, 32), [1])
 
         self.bounce = Sound('assets/Untitled.wav')
 
@@ -92,7 +92,7 @@ class Ball(BasicBall):
             closest_block = None
             closest_side = None
             shortest_dist = float('inf')
-            for block in block_manager.target_manager.get_all_blocks():
+            for block in block_manager.get_all_target_blocks():
                 if not self.get_bounding_box().collides_with_position(block.project_position()):
                     continue
                 move_dist, collision_side = self.get_collision(block, speed_factor=distance)
@@ -101,7 +101,7 @@ class Ball(BasicBall):
                     closest_side = collision_side
                     shortest_dist = move_dist
             if closest_block:
-                block_manager.block_hit_by_ball(closest_block)
+                block_manager.target_hit_by_ball(closest_block)
                 handle_collision(shortest_dist, closest_side)
                 return True
 
@@ -135,5 +135,5 @@ class Ball(BasicBall):
 
     def draw(self):
         if not self.hit_timer.ready:
-            self.hit_sprite.draw(c.window, self.hit_position)
-        pgdraw.circle(c.window, self.color, self.pos.center, self.radius)
+            self.hit_sprite.draw(self.hit_position)
+        self.sprite.draw(self.pos)

@@ -1,28 +1,42 @@
 from pygame import Surface
-from pygame.image import load
-from pygame.transform import scale
 
+import constants as c
 from objects.position import Position
 
 
 class Sprite:
     def __init__(self,
-                 filepath: str,
+                 image: Surface,
                  draw_size: tuple[float, float],
-                 draw_offset: tuple[float, float] = (0.0, 0.0),
                  num_frames: int = 1):
-        image = load(filepath).convert_alpha()
-        image = scale(image, (draw_size[0] * num_frames, draw_size[1]))
         self.image = image
-        self.size = (image.get_width() / num_frames, image.get_height())
-        self.draw_offset = draw_offset
+        self.draw_size = draw_size
         self.num_frames = num_frames
+        self.cur_frame = 0
+        self.frame_tick = 0
+
+    def advance_frame(self):
+        self.cur_frame += 1
+        if self.cur_frame >= self.num_frames:
+            self.cur_frame = 0
+
+    def set_frame(self,
+                  frame: int):
+        self.cur_frame = frame
+        if self.cur_frame >= self.num_frames:
+            raise Exception("Frame set to sprite is higher than the number of frames the sprite contains.")
+
+    def reset(self):
+        self.cur_frame = 0
 
     def draw(self,
-             window: Surface,
              position: Position,
-             frame: int = 0):
-        if frame >= self.num_frames:
-            raise Exception("Given frame number exceeds frames for this sprite.")
-        image = self.image.subsurface((self.size[0] * frame, 0, self.size[0], self.size[1]))
-        window.blit(image, (position.left + self.draw_offset[0], position.top + self.draw_offset[1]))
+             frame: int = None):
+        if frame is None:
+            frame = self.cur_frame
+            self.frame_tick += 1
+            if self.frame_tick > 1:  # TODO Pass 'animation time' as a parameter or create constant
+                self.advance_frame()
+                self.frame_tick = 0
+        image = self.image.subsurface((self.draw_size[0] * frame, 0, self.draw_size[0], self.draw_size[1]))
+        c.window.blit(image, (position.left, position.top))

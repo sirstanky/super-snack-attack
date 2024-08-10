@@ -4,16 +4,15 @@ import constants as c
 from controls.states.state import State
 from controls.states.pausemenu import PauseMenu
 from objects.ball.ball import Ball
-from blockmanagers.blockmanager import BlockManager
+from objects.blocks.blockmanager import BlockManager
 from objects.paddle.bat import Bat
-from objects.paddle.catcher import Catcher
 from ui.ui import UI
 
 
 def initialize(grid_size: tuple[int, int] = None):
     if grid_size is None:
         grid_size = (c.target_columns, c.target_rows)
-    return Bat(), Catcher(), Ball(), BlockManager(grid_size), UI()
+    return Bat(), Ball(), BlockManager(grid_size), UI()
 
 
 class MainGame(State):
@@ -23,7 +22,7 @@ class MainGame(State):
             grid_size = (c.target_columns, c.target_rows)
 
         # Game objects
-        self.bat, self.catcher, self.ball, self.block_manager, self.ui = initialize(grid_size)
+        self.bat, self.ball, self.block_manager, self.ui = initialize(grid_size)
 
         self.keys = pg.key.get_pressed()
         self.prev_keys = self.keys
@@ -41,7 +40,6 @@ class MainGame(State):
 
     def handle_mouse_click(self):
         mouse_pos = pg.mouse.get_pos()
-        self.debug_reduce_caught_blocks(mouse_pos)
         self.debug_destroy_target_block(mouse_pos)
 
     def handle_key_presses(self):
@@ -52,28 +50,16 @@ class MainGame(State):
             c.game_state.pop(-1)
         self.prev_keys = self.keys
 
-    def debug_reduce_caught_blocks(self,
-                                   mouse_pos: tuple[int, int]):
-        caught_blocks = self.catcher.caught_manager.blocks
-        if caught_blocks:
-            w = caught_blocks[0].pos.width
-            h = caught_blocks[0].pos.height * min(len(caught_blocks), self.catcher.caught_manager.display_limit)
-            x, y = caught_blocks[-1].pos.top_left
-            sandwich = pg.Rect(x, y, w, h)
-            if sandwich.collidepoint(mouse_pos):
-                while len(caught_blocks) > self.catcher.caught_manager.display_limit / 2:
-                    caught_blocks.pop(-1)
-
     def debug_destroy_target_block(self,
                                    mouse_pos: tuple[int, int]):
-        for column in self.block_manager.target_manager.columns:
-            for block in column.blocks:
+        for column in self.block_manager.target_blocks:
+            for block in column:
                 if block is not None and block.pos.collides_with_point(mouse_pos):
-                    self.block_manager.block_hit_by_ball(block)
+                    self.block_manager.target_hit_by_ball(block)
 
     def update_game(self):
         if self.bat.swing_timer.ready:
-            if self.keys[pg.K_SPACE] and not self.prev_keys[pg.K_SPACE]:
+            if self.keys[pg.K_SPACE]:
                 self.bat.swing(self.ball)
         self.bat.update(self.keys)
         # This will be True if the ball hits the bottom of the window
@@ -81,20 +67,18 @@ class MainGame(State):
             self.reset_game()
             return
         self.block_manager.update()
-        self.catcher.update(self.block_manager.falling_manager)
         self.prev_keys = self.keys
 
     def reset_game(self):
-        grid_size = (self.block_manager.target_manager.num_columns, self.block_manager.target_manager.num_rows)
-        self.bat, self.catcher, self.ball, self.block_manager, self.ui = initialize(grid_size)
+        grid_size = (self.block_manager.target_columns, self.block_manager.target_rows)
+        self.bat, self.ball, self.block_manager, self.ui = initialize(grid_size)
 
     def draw_game(self):
         c.window.fill((50, 50, 50))
-        self.catcher.draw()
         self.block_manager.draw()
         self.ball.draw()
         self.bat.draw()
-        self.ui.draw(self.bat, self.catcher, self.block_manager.target_manager, c.window)
+        self.ui.draw(self.bat, self.block_manager, c.window)
         pg.display.update()
 
     def run(self):
