@@ -1,15 +1,17 @@
 from random import random
 
 import constants as c
+from controls.timer import Timer
 from objects.blocks.block import Block
 from objects.blocks.cheese import Cheese
 from objects.blocks.lettuce import Lettuce
+from objects.blocks.pickles import Pickles
 from objects.paddle.catcher import Catcher
-from controls.timer import Timer
 
 block_table = [
-    (0.5, Cheese),
-    (1.0, Lettuce)
+    (0.333, Cheese),
+    (0.666, Lettuce),
+    (1.0, Pickles)
 ]
 
 
@@ -25,7 +27,8 @@ def choose_block():
 
 class BlockManager:
     def __init__(self,
-                 grid_size: tuple[int, int]):
+                 grid_size: tuple[int, int],
+                 drop_delay: float = c.target_block_drop_delay):
         def find_block_size():
             column_width = c.window_width / self.target_columns
             gap = column_width / 10
@@ -53,8 +56,9 @@ class BlockManager:
         self.block_size = find_block_size()
         self.target_positions, self.drop_positions = find_target_and_drop_positions()
         self.drop_block_timers: list[tuple[Timer, int]] = []
+        self.drop_delay = drop_delay
         self.target_blocks: list[list[Block | None]] = [[choose_block()(self.target_positions[x][y], self.block_size)
-                                                        for y in range(self.target_rows)]
+                                                         for y in range(self.target_rows)]
                                                         for x in range(self.target_columns)]
         self.falling_blocks: list[Block] = []
         self.caught_blocks: list[Block] = []
@@ -109,12 +113,12 @@ class BlockManager:
             for row, block in enumerate(blocks):
                 if block == target_block:
                     self.target_blocks[column][row] = None
-                    timer = Timer(c.target_manager_drop_delay)
+                    timer = Timer(self.drop_delay)
                     self.drop_block_timers.append((timer, column))
                     timer.start()
                     self.shift_blocks_down(column)
                     self.falling_blocks.append(block)
-                    block.change_state(Block.State.FALLING)
+                    block.change_state(Block.State.FALLING, falling_blocks=self.falling_blocks)
                     return
 
     def shift_blocks_down(self,
@@ -168,6 +172,8 @@ class BlockManager:
         update_catcher()
         for block in self.falling_blocks:
             block.update()
+            # TODO Create method to catch blocks, block needs to have an 'on-catch' method
+            #  ('on-catch' returns result? Ex add points, remove ingredients, stun catcher, catch failed, etc)
             if block.pos.collides_with_position(self.catch_area):
                 self.falling_blocks.remove(block)
                 self.caught_blocks.append(block)

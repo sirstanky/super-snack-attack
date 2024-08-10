@@ -9,25 +9,17 @@ class BasicBall(BasicObject):
                  width: float,
                  sprite_sheet: SpriteSheet,
                  max_speed: float,
-                 speed_x: float = None,
-                 speed_y: float = None,
-                 acceleration: float = 1.0,
+                 speed: tuple[float, float],
+                 acceleration: float,
                  going_up: bool = True,
                  going_right: bool = True):
-        if speed_x is not None and speed_y is None:
-            speed_y = self.get_other_vector(speed_x)
-        elif speed_y is not None and speed_x is None:
-            speed_x = self.get_other_vector(speed_y)
-        elif speed_x is None and speed_y is None:
-            speed_x, speed_y = 0.0, 0.0
-        speed_x = abs(speed_x) if going_right else -abs(speed_x)
-        speed_y = -abs(speed_y) if going_up else abs(speed_y)
+        speed = abs(speed[0]) if going_right else -abs(speed[0]), -abs(speed[1]) if going_up else abs(speed[1])
 
         super().__init__(center=center,
                          size=(width, width),
                          sprite_sheet=sprite_sheet,
                          max_speed=max_speed,
-                         speed=(speed_x, speed_y),
+                         speed=speed,
                          acceleration=acceleration)
 
         self.radius = self.pos.width / 2
@@ -50,12 +42,6 @@ class BasicBall(BasicObject):
                       check_obj: BasicObject | Position,
                       speed_factor: float = 1.0,
                       deflate: bool = False):
-        """
-        Checks all sides of a given objects position to detect a collision.
-
-        :param check_obj: object to check for collision
-        :return: percentage of frame moved before collision and the int side of collision, or None
-        """
         def get_collide_distance(point_speed: tuple[float, float],
                                  line: tuple[tuple[float, float], tuple[float, float]],
                                  line_speed: tuple[float, float]):
@@ -124,3 +110,15 @@ class BasicBall(BasicObject):
             return shortest_dist, closest_side
         else:
             return None, None
+
+    def check_corner_collision(self,
+                               intersection_point: tuple[float, float]):
+        if intersection_point == self.pos.top_left and (self.speed_x >= 0 and self.speed_y >= 0):
+            return True
+        elif intersection_point == self.pos.top_right and (self.speed_x <= 0 <= self.speed_y):
+            return True
+        elif intersection_point == self.pos.bottom_left and (self.speed_x >= 0 >= self.speed_y):
+            return True
+        elif intersection_point == self.pos.bottom_right and (self.speed_x <= 0 and self.speed_y <= 0):
+            return True
+        return False

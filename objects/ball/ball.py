@@ -1,5 +1,3 @@
-from math import sqrt
-
 from pygame.mixer import Sound
 
 import constants as c
@@ -12,40 +10,25 @@ from sprites.spritesheet import SpriteSheet
 
 class Ball(BasicBall):
     def __init__(self,
-                 width: float = None,
-                 center: tuple[float, float] = None,
-                 max_speed: float = None,
-                 speed_x: float = None,
-                 speed_y: float = None,
+                 width: float = c.ball_width,
+                 center: tuple[float, float] = c.ball_start_position,
+                 max_speed: float = c.ball_max_speed,
+                 speed: tuple[float, float] = c.ball_start_speed,
+                 acceleration: float = 1.0,
+                 speed_increase_from_hit: float = c.ball_speed_increase_from_collisions,
                  going_right: bool = True,
                  going_up: bool = True):
 
-        if width is None:
-            width = c.ball_width
-        if center is None:
-            center = (c.window_width / 2, c.window_height / 2)
-        if max_speed is None:
-            max_speed = c.ball_max_speed
-        if speed_x is None and speed_y is None:
-            speed_x = sqrt((max_speed ** 2) / 2)
-            speed_y = speed_x
-        else:
-            if speed_x is None:
-                speed_x = 0.0
-            else:
-                speed_y = 0.0
-
-        sprite = SpriteSheet('assets/tomato.png', (width, width), (16, 16), [16])
-
         super().__init__(center=center,
                          width=width,
-                         sprite_sheet=sprite,
+                         sprite_sheet=SpriteSheet('assets/tomato.png', (width, width), (16, 16), [16]),
                          max_speed=max_speed,
-                         speed_x=speed_x,
-                         speed_y=speed_y,
+                         speed=speed,
+                         acceleration=acceleration,
                          going_right=going_right,
                          going_up=going_up)
 
+        self.speed_increase_from_hit = speed_increase_from_hit
         self.hit_timer = Timer(0.25)
         self.hit_position = Position(self.pos.center, self.pos.size)
         self.hit_sprite = SpriteSheet('assets/ball_hit.png', (self.pos.width * 2, self.pos.height * 2), (32, 32), [1])
@@ -61,7 +44,7 @@ class Ball(BasicBall):
                    go_right: bool):
         self.hit_timer.start()
         self.hit_position.center = self.pos.center
-        self.max_speed += c.ball_speed_increase_from_collisions
+        self.max_speed += self.speed_increase_from_hit
         self.speed_x = self.max_speed * x_angle
         self.speed_y = self.max_speed * y_angle
         self.cap_speed()
@@ -106,7 +89,7 @@ class Ball(BasicBall):
                 return True
 
         def check_collision_with_window():
-            move_dist, collision_side = self.get_collision(c.ball_boundary, speed_factor=distance, deflate=True)
+            move_dist, collision_side = self.get_collision(c.ball_window_boundary, speed_factor=distance, deflate=True)
             if move_dist:
                 handle_collision(move_dist, collision_side)
                 return True if collision_side == 2 else False

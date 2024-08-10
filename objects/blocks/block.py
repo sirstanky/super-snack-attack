@@ -43,16 +43,16 @@ class Block(BasicObject):
 
     def change_state(self,
                      state: Block.State,
-                     *args):
-        # TODO Change sprites here
+                     **kwargs):
+        self.state = state
+        self.sprite.current_sprite = self.sprite.sprites[state.value]
         if state == Block.State.TARGET:
-            self.state = state
-            if args:
-                self.y_destination = args[0]
+            if 'y_destination' in kwargs:
+                self.y_destination = kwargs['y_destination']
         elif state == Block.State.FALLING:
-            self.state = state
+            pass
         elif state == Block.State.CAUGHT:
-            self.state = state
+            pass
 
     def update(self,
                **kwargs):
@@ -75,4 +75,4 @@ class Block(BasicObject):
 
     # TODO This will have to be written to handle different sprite states and animations
     def draw(self):
-        self.sprite.draw(self.pos, self.state.value)
+        self.sprite.draw(self.pos)

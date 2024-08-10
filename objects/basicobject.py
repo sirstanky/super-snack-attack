@@ -112,7 +112,8 @@ class BasicObject:
         self.speed_y = -self.speed_y
 
     def accelerate(self,
-                   acceleration: tuple[int, int]):
+                   acceleration: tuple[int, int],
+                   cap_speed: bool = True):
         def decelerate(start_speed: float):
             friction = 1.0 - self.acceleration
             if -(self.acceleration / 3) <= start_speed <= (self.acceleration / 3):
@@ -130,7 +131,8 @@ class BasicObject:
             self.speed_x = decelerate(self.speed_x)
         if acceleration[1] == 0:
             self.speed_y = decelerate(self.speed_y)
-        self.cap_speed()
+        if cap_speed:
+            self.cap_speed()
 
     def move(self,
              *args):

@@ -1,7 +1,6 @@
 import pygame as pg
 
 import constants as c
-from controls.states.mainmenu import MainMenu
 from controls.states.game import MainGame
 
 # Initialize pygame

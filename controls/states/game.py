@@ -9,17 +9,13 @@ from objects.paddle.bat import Bat
 from ui.ui import UI
 
 
-def initialize(grid_size: tuple[int, int] = None):
-    if grid_size is None:
-        grid_size = (c.target_columns, c.target_rows)
+def initialize(grid_size: tuple[int, int]):
     return Bat(), Ball(), BlockManager(grid_size), UI()
 
 
 class MainGame(State):
     def __init__(self,
-                 grid_size: tuple[int, int] = None):
-        if grid_size is None:
-            grid_size = (c.target_columns, c.target_rows)
+                 grid_size: tuple[int, int] = (c.target_columns, c.target_rows)):
 
         # Game objects
         self.bat, self.ball, self.block_manager, self.ui = initialize(grid_size)

@@ -19,9 +19,13 @@ class SpriteSheet:
             sub_image = scale(sub_image, (draw_size[0] / frame_size[0] * sub_image.get_width(),
                                           draw_size[1] / frame_size[1] * sub_image.get_height()))
             self.sprites.append(Sprite(sub_image, draw_size, num_frames))
+        self.current_sprite = self.sprites[0]
+
+    def change_sprite(self,
+                      new_sprite_row: int):
+        self.current_sprite = self.sprites[new_sprite_row]
 
     def draw(self,
              position: Position,
-             sprite_row: int = 0,
              frame: int = None):
-        self.sprites[sprite_row].draw(position, frame)
+        self.current_sprite.draw(position, frame)

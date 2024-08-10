@@ -5,7 +5,7 @@ from sprites.spritesheet import SpriteSheet
 
 class Catcher(Paddle):
     def __init__(self,
-                 center: tuple[float, float] = (c.window_width / 2, c.window_height * 0.95),
+                 center: tuple[float, float] = c.catcher_start_position,
                  size: tuple[float, float] = c.catcher_size,
                  max_speed: float = c.catcher_max_speed,
                  speed: tuple[float, float] = (0.0, 0.0),

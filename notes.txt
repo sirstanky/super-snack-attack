@@ -1,11 +1,9 @@
 BUGS:
 caught blocks draw too small (width-wise)
-exporting sprites makes them not draw (shows invisible)
-pausing still runs the clock in delta time (leaves plummet after un-pausing)
-    add clock in game loop to control game delta time
 pause is janky because game updates after pause is initiated?
 
 BALANCE:
+make pickles fall more realistically (put a slow on their x speed over time)
 change sprite sizes based on window diagonal instead of width
     bat is ridiculously huge on different aspect ratios
 tune direction ball moves when hit by bat (make the ball go vertically when hit right but never horizontally)
@@ -14,6 +12,7 @@ tune direction ball moves when hit by bat (make the ball go vertically when hit 
         'skill' hit areas deflect accurately, other areas have a margin of variance
 
 CURRENT FOCUS:
+can move collisions.py methods into base classes
 put a 'position' parameter in 'add block' for the managers
     (or move block when hit to impact position and adjust speed for current delta frame time)
 create save file that tracks score between plays
@@ -48,12 +47,16 @@ ingredients:
         sub roll (basic)
         baguette (heavy hits speed up ball and break multiple spots)
     good:
-        lettuce - drifts down like a leaf
-        pickles - pops into multiple blocks to catch
-        cheese - falls straight down
-        onions - falls slowly and needs to be hit again by the ball or the bat to dice, or it bounces off and falls
+        -lettuce - drifts down like a leaf
+        -pickles - pops into multiple blocks to catch
+        -cheese - falls straight down
+        onions - falls slowly and needs to be hit again by the ball to dice, or it bounces off and falls
         green peppers - takes multiple hits to slice up before falling
-        bacon - power up hits make bacon crispy and worth more points
+        bacon - power up hits make bacon crispy and worth more points (hot sauce bonus)
+        condiment bottles - falls to the ground and gets activated when stepped on by the catcher:
+            hot sauce - powers up the bat so the ball breaks through multiple objects at high speed before slowing down
+            ketchup - sprays a few random blocks so that their score is 1.5x higher when caught
+            mustard - doubles the score of the last caught ingredient
     bad:
         socks (knock off some ingredients)
         trash bag (creates slipping hazards)
