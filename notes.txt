@@ -1,9 +1,10 @@
 BUGS:
-caught blocks draw too small (width-wise)
-pause is janky because game updates after pause is initiated?
+LAG
+still losing the ball on occasion
+ball can be hit, so it has no vertical movement
 
 BALANCE:
-make pickles fall more realistically (put a slow on their x speed over time)
+caught blocks draw too small (width-wise)
 change sprite sizes based on window diagonal instead of width
     bat is ridiculously huge on different aspect ratios
 tune direction ball moves when hit by bat (make the ball go vertically when hit right but never horizontally)
@@ -12,15 +13,23 @@ tune direction ball moves when hit by bat (make the ball go vertically when hit 
         'skill' hit areas deflect accurately, other areas have a margin of variance
 
 CURRENT FOCUS:
-can move collisions.py methods into base classes
-put a 'position' parameter in 'add block' for the managers
-    (or move block when hit to impact position and adjust speed for current delta frame time)
+onion
+    behaviors
+pepper
+    behaviors
+bacon
+    add
+ketchup
+    add
+mustard
+    add
+hot sauce
+    add
+pickle
+    constants to be unique instead of riding off of 'falling block'
 create save file that tracks score between plays
     add ability to reset score
 implement corner collision checks
-
-add sprites
-    create animations
 add weight effects to catcher:
     catcher sinks with weight
     add total limit where catcher drops the sandwich
@@ -53,6 +62,7 @@ ingredients:
         onions - falls slowly and needs to be hit again by the ball to dice, or it bounces off and falls
         green peppers - takes multiple hits to slice up before falling
         bacon - power up hits make bacon crispy and worth more points (hot sauce bonus)
+        egg - catch for points but if it's missed then it creates a slip trap on the ground for the catcher
         condiment bottles - falls to the ground and gets activated when stepped on by the catcher:
             hot sauce - powers up the bat so the ball breaks through multiple objects at high speed before slowing down
             ketchup - sprays a few random blocks so that their score is 1.5x higher when caught

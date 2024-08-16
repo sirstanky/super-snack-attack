@@ -36,6 +36,9 @@ class Block(BasicObject):
 
         self.score_value = score_value
         self.y_destination = y_destination
+        self.target_sprite = 0
+        self.falling_sprite = len(self.sprite.sprites) - 2
+        self.caught_sprite = len(self.sprite.sprites) - 1
 
     @property
     def catch_area(self):
@@ -45,14 +48,23 @@ class Block(BasicObject):
                      state: Block.State,
                      **kwargs):
         self.state = state
-        self.sprite.current_sprite = self.sprite.sprites[state.value]
         if state == Block.State.TARGET:
+            self.sprite.change_sprite(self.target_sprite)
             if 'y_destination' in kwargs:
                 self.y_destination = kwargs['y_destination']
         elif state == Block.State.FALLING:
-            pass
+            self.sprite.change_sprite(self.falling_sprite)
         elif state == Block.State.CAUGHT:
-            pass
+            self.sprite.change_sprite(self.caught_sprite)
+
+    def on_hit(self):
+        return True
+
+    def hit_by_bat(self):
+        pass
+
+    def on_catch(self):
+        return True
 
     def update(self,
                **kwargs):

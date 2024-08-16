@@ -56,13 +56,13 @@ class MainGame(State):
     def update_game(self):
         if self.bat.swing_timer.ready:
             if self.keys[pg.K_SPACE]:
-                self.bat.swing(self.ball)
+                self.bat.swing(self.ball, self.block_manager.falling_blocks)
         self.bat.update(self.keys)
         # This will be True if the ball hits the bottom of the window
         if self.ball.update(self.block_manager) is not None:
             self.reset_game()
             return
-        self.block_manager.update()
+        self.block_manager.update(ball_pos=self.ball.pos)
         self.prev_keys = self.keys
 
     def reset_game(self):

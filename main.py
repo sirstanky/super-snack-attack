@@ -14,12 +14,10 @@ pg.display.set_caption("Super Snack Attack!")
 # Set up game variables
 c.clock = pg.time.Clock()
 
-# TODO Switch to MainMenu()
-c.game_state = [MainMenu()]
+c.game_state = [MainGame()]
 
 while c.game_state:
     c.game_state[-1].run()
-
 
 print("Quit with elegance")
 pg.quit()

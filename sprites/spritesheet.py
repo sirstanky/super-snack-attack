@@ -25,6 +25,9 @@ class SpriteSheet:
                       new_sprite_row: int):
         self.current_sprite = self.sprites[new_sprite_row]
 
+    def next_sprite(self):
+        self.current_sprite = self.sprites[self.sprites.index(self.current_sprite) + 1]
+
     def draw(self,
              position: Position,
              frame: int = None):
