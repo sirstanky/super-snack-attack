@@ -6,6 +6,7 @@ from controls.timer import Timer
 from objects.ball.basicball import BasicBall
 from objects.position import Position
 from sprites.spritesheet import SpriteSheet
+from sprites.sheetinfo import ball, ball_hit
 
 
 class Ball(BasicBall):
@@ -21,7 +22,7 @@ class Ball(BasicBall):
 
         super().__init__(center=center,
                          width=width,
-                         sprite_sheet=SpriteSheet('assets/tomato.png', (width, width), (16, 16), [16]),
+                         sprite_sheet=SpriteSheet(ball, (width, width)),
                          max_speed=max_speed,
                          speed=speed,
                          acceleration=acceleration,
@@ -31,7 +32,7 @@ class Ball(BasicBall):
         self.speed_increase_from_hit = speed_increase_from_hit
         self.hit_timer = Timer(0.25)
         self.hit_position = Position(self.pos.center, self.pos.size)
-        self.hit_sprite = SpriteSheet('assets/ball_hit.png', (self.pos.width * 2, self.pos.height * 2), (32, 32), [1])
+        self.hit_sprite = SpriteSheet(ball_hit, (self.pos.width * 2, self.pos.height * 2))
 
         self.bounce = Sound('assets/Untitled.wav')
 
@@ -45,13 +46,12 @@ class Ball(BasicBall):
         self.hit_timer.start()
         self.hit_position.center = self.pos.center
         self.max_speed += self.speed_increase_from_hit
-        self.speed_x = self.max_speed * x_angle
         self.speed_y = self.max_speed * y_angle
+        if abs(self.speed_y) < 0.75:
+            self.speed_y = 0.75
+        self.speed_x = self.get_other_vector(self.speed_y)
         self.cap_speed()
-        if go_right:
-            self.speed_x = abs(self.speed_x)
-        else:
-            self.speed_x = abs(self.speed_x) * -1
+        self.speed_x = abs(self.speed_x) if go_right else (abs(self.speed_x) * -1)
         self.speed_y = abs(self.speed_y) * -1
 
     def move(self,

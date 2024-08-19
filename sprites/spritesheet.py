@@ -7,11 +7,11 @@ from sprites.sprite import Sprite
 
 class SpriteSheet:
     def __init__(self,
-                 filepath: str,
-                 draw_size: tuple[float, float],
-                 frame_size: tuple[int, int],
-                 frames: list[int]):
+                 sheet_info: tuple[str, list[int]],
+                 draw_size: tuple[float, float]):
+        filepath, frames = sheet_info
         image = load(filepath).convert_alpha()
+        frame_size = image.get_width() // max(frames), image.get_height() // len(frames)
         self.image = image
         self.sprites = []
         for row, num_frames in enumerate(frames):

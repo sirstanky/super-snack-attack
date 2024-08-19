@@ -62,7 +62,7 @@ class MainGame(State):
         if self.ball.update(self.block_manager) is not None:
             self.reset_game()
             return
-        self.block_manager.update(ball_pos=self.ball.pos)
+        self.block_manager.update()
         self.prev_keys = self.keys
 
     def reset_game(self):
