@@ -5,10 +5,11 @@ import pygame as pg
 import constants as c
 from controls.timer import Timer
 from objects.ball.ball import Ball
-from objects.blocks.block import Block
+from objects.blocks.block import FallingBlock
 from objects.paddle.paddle import Paddle
 from objects.position import Position
 from sprites.spritesheet import SpriteSheet
+from sprites.sheetinfo import bat
 
 
 class Bat(Paddle):
@@ -21,7 +22,7 @@ class Bat(Paddle):
 
         super().__init__(center=center,
                          size=size,
-                         sprite_sheet=SpriteSheet('assets/player.png', size, (27, 54), [2]),
+                         sprite_sheet=SpriteSheet(bat, size),
                          max_speed=max_speed,
                          speed=speed,
                          acceleration=acceleration)
@@ -34,7 +35,7 @@ class Bat(Paddle):
 
     def swing(self,
               ball: Ball,
-              falling_blocks: list[Block]):
+              falling_blocks: list[FallingBlock]):
 
         def get_closest_point():
             def get_intersection_point():
@@ -76,6 +77,7 @@ class Bat(Paddle):
             return _closest_point
 
         def decide_angle():
+            # TODO Remove x_angle, no longer needed
             _x_angle = (self.hit_zone.width - (ball.pos.x - self.hit_zone.left)) / self.hit_zone.width
             _y_angle = ((self.hit_zone.height / 2) - abs(ball.pos.y - self.hit_zone.y)) / (self.hit_zone.height / 2)
             scale = 1 / (_x_angle + _y_angle)

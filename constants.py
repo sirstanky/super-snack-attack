@@ -56,6 +56,31 @@ catcher_max_speed: float = window_width * 0.0085
 catcher_acceleration: float = window_width * 0.00007
 
 # Blocks
+target_block_max_speed: float = window_height * 0.00625
+target_block_acceleration: float = window_height * 0.000156
+
+cheese_fall_speed: float = target_block_max_speed
+cheese_fall_acceleration: float = target_block_acceleration
+cheese_score: int = 10
+
+lettuce_fall_speed: float = 1.5
+lettuce_fall_acceleration: float = target_block_acceleration / 10
+lettuce_swing_distance: float = window_width / 8
+lettuce_drop_distance: float = window_height / 10
+lettuce_score: int = 20
+
+onion_fall_speed: float = target_block_max_speed
+onion_fall_acceleration: float = target_block_acceleration
+onion_score: int = 30
+
+pepper_fall_speed: float = target_block_max_speed
+pepper_fall_acceleration: float = target_block_acceleration
+pepper_score: int = 40
+
+pickle_fall_speed: float = target_block_max_speed
+pickle_fall_acceleration: float = target_block_acceleration
+pickle_score = 50
+
 falling_block_speed: float = window_height * 0.00625  # = 4
 falling_block_acceleration: float = window_height * 0.000156
 floating_block_speed: float = 1.5
@@ -65,7 +90,7 @@ floating_block_drop_distance: float = window_height / 10
 caught_block_size: tuple[float, float] = (catcher_size[0] * 1.1, max(catcher_size[1] / 4, 1))
 
 # Block managers
-target_columns: int = 10
-target_rows: int = 4
+target_columns: int = 15
+target_rows: int = 6
 target_area: int = int(window_height * 0.15)
 target_block_drop_delay: float = 7.0
