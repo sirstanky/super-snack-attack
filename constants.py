@@ -1,9 +1,19 @@
 from math import sqrt
+from time import time_ns
 
 import pygame
 
 from controls.states.state import State
 from objects.position import Position
+
+
+def time_wrapper(func):
+    def inner(*args, **kwargs):
+        temp_time = time_ns()
+        value = func(*args, **kwargs)
+        print(f"{func.__name__}: {time_ns() - temp_time}")
+        return value
+    return inner
 
 
 def get_distance(start: tuple[float, float] | float,
@@ -55,7 +65,17 @@ catcher_size: tuple[float, float] = (window_width * 0.15, window_width * 0.03)
 catcher_max_speed: float = window_width * 0.0085
 catcher_acceleration: float = window_width * 0.00007
 
+# Block manager
+target_columns: int = 15
+target_rows: int = 6
+target_area: int = int(window_height * 0.15)
+target_block_drop_delay: float = 7.0
+
 # Blocks
+block_size: tuple[float, float] = ((window_width / target_columns) - (window_width / target_columns) / 10,
+                                   ((target_area + top_window_ui_buffer) / target_rows) - (
+                                               window_width / target_columns) / 10)
+
 target_block_max_speed: float = window_height * 0.00625
 target_block_acceleration: float = window_height * 0.000156
 
@@ -81,16 +101,7 @@ pickle_fall_speed: float = target_block_max_speed
 pickle_fall_acceleration: float = target_block_acceleration
 pickle_score = 50
 
-falling_block_speed: float = window_height * 0.00625  # = 4
-falling_block_acceleration: float = window_height * 0.000156
-floating_block_speed: float = 1.5
-floating_block_acceleration: float = falling_block_acceleration / 10
-floating_block_swing_distance: float = window_width / 8
-floating_block_drop_distance: float = window_height / 10
-caught_block_size: tuple[float, float] = (catcher_size[0] * 1.1, max(catcher_size[1] / 4, 1))
+sock_fall_speed: float = target_block_max_speed
+sock_fall_acceleration: float = target_block_acceleration
 
-# Block managers
-target_columns: int = 15
-target_rows: int = 6
-target_area: int = int(window_height * 0.15)
-target_block_drop_delay: float = 7.0
+caught_block_size: tuple[float, float] = (catcher_size[0] * 1.1, max(catcher_size[1] / 4, 1))

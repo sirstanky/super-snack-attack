@@ -5,8 +5,13 @@ from objects.blocks.blockmanager import BlockManager
 from controls.timer import Timer
 from objects.ball.basicball import BasicBall
 from objects.position import Position
-from sprites.spritesheet import SpriteSheet
-from sprites.sheetinfo import ball, ball_hit
+from sprites.spritesheet import SpriteSheet, get_image_and_frames
+
+sprite_frames = [16]
+sprite_sheet, frame_size = get_image_and_frames('assets/tomato.png', sprite_frames)
+
+hit_frames = [1]
+hit_sheet, hit_size = get_image_and_frames('assets/ball_hit.png', hit_frames)
 
 
 class Ball(BasicBall):
@@ -22,7 +27,7 @@ class Ball(BasicBall):
 
         super().__init__(center=center,
                          width=width,
-                         sprite_sheet=SpriteSheet(ball, (width, width)),
+                         sprite_sheet=SpriteSheet(sprite_sheet, frame_size, sprite_frames, (width, width)),
                          max_speed=max_speed,
                          speed=speed,
                          acceleration=acceleration,
@@ -32,7 +37,7 @@ class Ball(BasicBall):
         self.speed_increase_from_hit = speed_increase_from_hit
         self.hit_timer = Timer(0.25)
         self.hit_position = Position(self.pos.center, self.pos.size)
-        self.hit_sprite = SpriteSheet(ball_hit, (self.pos.width * 2, self.pos.height * 2))
+        self.hit_sprite = SpriteSheet(hit_sheet, hit_size, hit_frames, (self.pos.width * 2, self.pos.height * 2))
 
         self.bounce = Sound('assets/Untitled.wav')
 
@@ -75,8 +80,9 @@ class Ball(BasicBall):
             closest_block = None
             closest_side = None
             shortest_dist = float('inf')
+            bounding_box = self.get_bounding_box()
             for block in block_manager.get_all_target_blocks():
-                if not self.get_bounding_box().collides_with_position(block.project_position()):
+                if not bounding_box.collides_with_position(block.project_position()):
                     continue
                 move_dist, collision_side = self.get_collision(block, speed_factor=distance)
                 if move_dist and move_dist < shortest_dist:
