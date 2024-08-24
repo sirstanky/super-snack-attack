@@ -2,42 +2,42 @@ from math import pi, sin
 from random import random
 
 import constants as c
-from objects.blocks.block import CaughtBlock, FallingBlock, TargetBlock
-from sprites.spritesheet import SpriteSheet
+from objects.blocks.block import Block, State, get_state_speeds
+from sprites.spritesheet import SpriteSheet, get_image_and_frames
 
-caught_info = 'assets/blocks/lettuce/caught.png', [1]
-falling_info = 'assets/blocks/lettuce/falling.png', [1]
-target_info = 'assets/blocks/lettuce/target.png', [1]
-
-
-class LettuceCaught(CaughtBlock):
-    def __init__(self,
-                 center: tuple[float, float],
-                 size: tuple[float, float] = c.caught_block_size,
-                 score_value: int = c.lettuce_score):
-
-        super().__init__(center=center,
-                         size=size,
-                         sprite_sheet=SpriteSheet(caught_info, size),
-                         score_value=score_value)
+sprite_frames = [1, 1, 1, 1]
+sprite_sheet, frame_size = get_image_and_frames('assets/blocks/lettuce.png', sprite_frames)
 
 
-class LettuceFalling(FallingBlock):
+def get_lettuce_speeds(state: State):
+    if state == State.FALLING:
+        return c.lettuce_fall_speed, c.lettuce_fall_acceleration
+    else:
+        return get_state_speeds(state)
+
+
+class Lettuce(Block):
     def __init__(self,
                  center: tuple[float, float],
                  size: tuple[float, float],
-                 max_speed: float = c.lettuce_fall_speed,
                  speed: tuple[float, float] = (0.0, 0.0),
-                 acceleration: float = c.lettuce_fall_acceleration,
+                 score_value = c.lettuce_score,
+                 target_y_dest: float = None,
+                 state: State = State.TARGET,
                  swing_distance: float = c.lettuce_swing_distance,
                  drop_distance: float = c.lettuce_drop_distance):
 
+        max_speed, acceleration = get_lettuce_speeds(state)
+
         super().__init__(center=center,
                          size=size,
-                         sprite_sheet=SpriteSheet(falling_info, size),
+                         sprite_sheet=SpriteSheet(sprite_sheet, frame_size, sprite_frames, size),
                          max_speed=max_speed,
                          speed=speed,
-                         acceleration=acceleration)
+                         acceleration=acceleration,
+                         score_value=score_value,
+                         target_y_dest=target_y_dest,
+                         state=state)
 
         self.swing_distance = swing_distance
         self.drop_distance = drop_distance
@@ -54,6 +54,8 @@ class LettuceFalling(FallingBlock):
             self.para_start = self.center_line
             self.para_end = self.right_swing + self.quarter_swing
             self.dir = 1
+        vertex = (self.para_start + self.para_end) / 2
+        self.amp = (self.drop_distance / ((vertex - self.para_start) * (vertex - self.para_end))) / 2
 
     @property
     def quarter_swing(self):
@@ -67,13 +69,22 @@ class LettuceFalling(FallingBlock):
     def left_swing(self):
         return self.center_line - self.swing_distance
 
-    def on_catch(self):
-        return [LettuceCaught(center=self.pos.center)]
+    def change_state(self,
+                     state: State):
+        self.max_speed, self.acceleration = get_lettuce_speeds(state)
+        self.sprite.change_sprite(state.value)
+        super().change_state(state)
+
+    def on_hit(self):
+        self.swing_height_limit = self.pos.y
+        return super().on_hit()
 
     def find_reversal_time(self):
-        return (1 / (pi * c.floating_block_speed)) * ((pi / 2) + (self.swing_count * pi))
+        return (1 / (pi * c.lettuce_fall_speed)) * ((pi / 2) + (self.swing_count * pi))
 
-    def update(self):
+    def update(self,
+               catcher_position: tuple[float, float],
+               stack_layer: int):
         def find_parabola():
             if self.pos.x < self.center_line:
                 self.para_start = self.left_swing
@@ -82,6 +93,12 @@ class LettuceFalling(FallingBlock):
                 self.para_start = self.left_swing - self.quarter_swing
                 self.para_end = self.right_swing
             self.swing_height_limit = self.pos.y
+            vertex = (self.para_start + self.para_end) / 2
+            self.amp = self.drop_distance / ((vertex - self.para_start) * (vertex - self.para_end))
+
+        if self.state != State.FALLING:
+            super().update(catcher_position, stack_layer)
+            return
 
         self.float_time += self.acceleration
         self.pos.x = self.dir * self.swing_distance * sin(pi * self.max_speed * self.float_time) + self.center_line
@@ -89,29 +106,4 @@ class LettuceFalling(FallingBlock):
             self.swing_count += 1
             self.reversal_time = self.find_reversal_time()
             find_parabola()
-        vertex = (self.para_start + self.para_end) / 2
-        amp = self.drop_distance / ((vertex - self.para_start) * (vertex - self.para_end))
-        if self.swing_count == 0:
-            amp /= 2
-        self.pos.y = amp * (self.pos.x - self.para_start) * (self.pos.x - self.para_end) + self.swing_height_limit
-
-
-class LettuceTarget(TargetBlock):
-    def __init__(self,
-                 center: tuple[float, float],
-                 size: tuple[float, float],
-                 max_speed: float = None,
-                 acceleration: float = None,
-                 y_destination: float = None):
-
-        super().__init__(center=center,
-                         size=size,
-                         sprite_sheet=SpriteSheet(target_info, size),
-                         max_speed=max_speed,
-                         acceleration=acceleration,
-                         y_destination=y_destination)
-
-    def on_hit(self):
-        return [LettuceFalling(center=self.pos.center,
-                               size=self.pos.size,
-                               speed=self.speed)]
+        self.pos.y = self.amp * (self.pos.x - self.para_start) * (self.pos.x - self.para_end) + self.swing_height_limit

@@ -1,60 +1,42 @@
 import constants as c
 
-from objects.blocks.block import CaughtBlock, FallingBlock, TargetBlock
-from sprites.spritesheet import SpriteSheet
+from objects.blocks.block import Block, State, get_state_speeds
+from sprites.spritesheet import SpriteSheet, get_image_and_frames
 
-caught_info = 'assets/blocks/cheese/caught.png', [1]
-falling_info = 'assets/blocks/cheese/falling.png', [1]
-target_info = 'assets/blocks/cheese/target.png', [1]
-
-
-class CheeseCaught(CaughtBlock):
-    def __init__(self,
-                 center: tuple[float, float],
-                 size: tuple[float, float] = c.caught_block_size,
-                 score_value: int = c.cheese_score):
-
-        super().__init__(center=center,
-                         size=size,
-                         sprite_sheet=SpriteSheet(caught_info, size),
-                         score_value=score_value)
+sprite_frames = [1, 1, 1, 1]
+sprite_sheet, frame_size = get_image_and_frames('assets/blocks/cheese.png', sprite_frames)
 
 
-class CheeseFalling(FallingBlock):
+def get_cheese_speeds(state: State):
+    if state == State.FALLING:
+        return c.cheese_fall_speed, c.cheese_fall_acceleration
+    else:
+        return get_state_speeds(state)
+
+
+class Cheese(Block):
     def __init__(self,
                  center: tuple[float, float],
                  size: tuple[float, float],
-                 max_speed: float = c.cheese_fall_speed,
                  speed: tuple[float, float] = (0.0, 0.0),
-                 acceleration: float = c.cheese_fall_acceleration):
+                 score_value: int = c.cheese_score,
+                 target_y_dest: float = None,
+                 state: State = State.TARGET):
+
+        max_speed, acceleration = get_cheese_speeds(state)
 
         super().__init__(center=center,
                          size=size,
-                         sprite_sheet=SpriteSheet(falling_info, size),
+                         sprite_sheet=SpriteSheet(sprite_sheet, frame_size, sprite_frames, size),
                          max_speed=max_speed,
                          speed=speed,
-                         acceleration=acceleration)
-
-    def on_catch(self):
-        return [CheeseCaught(center=self.pos.center)]
-
-
-class CheeseTarget(TargetBlock):
-    def __init__(self,
-                 center: tuple[float, float],
-                 size: tuple[float, float],
-                 max_speed: float = None,
-                 acceleration: float = None,
-                 y_destination: float = None):
-
-        super().__init__(center=center,
-                         size=size,
-                         sprite_sheet=SpriteSheet(target_info, size),
-                         max_speed=max_speed,
                          acceleration=acceleration,
-                         y_destination=y_destination)
+                         score_value=score_value,
+                         target_y_dest=target_y_dest,
+                         state=state)
 
-    def on_hit(self):
-        return [CheeseFalling(center=self.pos.center,
-                              size=self.pos.size,
-                              speed=self.speed)]
+    def change_state(self,
+                     state: State):
+        self.max_speed, self.acceleration = get_cheese_speeds(state)
+        self.sprite.change_sprite(state.value)
+        super().change_state(state)

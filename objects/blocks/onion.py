@@ -1,40 +1,49 @@
 import constants as c
-from objects.blocks.block import CaughtBlock, FallingBlock, TargetBlock
-from sprites.spritesheet import SpriteSheet
+from objects.blocks.block import Block, State, get_state_speeds
+from sprites.spritesheet import SpriteSheet, get_image_and_frames
 
-caught_info = 'assets/blocks/onion/caught.png', [1]
-falling_info = 'assets/blocks/onion/falling.png', [1, 1]
-target_info = 'assets/blocks/onion/target.png', [1]
-
-
-class OnionCaught(CaughtBlock):
-    def __init__(self,
-                 center: tuple[float, float],
-                 size: tuple[float, float] = c.caught_block_size,
-                 score_value: int = c.onion_score):
-
-        super().__init__(center=center,
-                         size=size,
-                         sprite_sheet=SpriteSheet(caught_info, size),
-                         score_value=score_value)
+sprite_frames = [1, 1, 1, 1, 1]
+sprite_sheet, frame_size = get_image_and_frames('assets/blocks/onion.png', sprite_frames)
 
 
-class OnionFalling(FallingBlock):
+def get_onion_speeds(state: State):
+    if state == State.FALLING:
+        return c.onion_fall_speed, c.onion_fall_acceleration
+    else:
+        return get_state_speeds(state)
+
+
+class Onion(Block):
     def __init__(self,
                  center: tuple[float, float],
                  size: tuple[float, float],
-                 max_speed: float = c.onion_fall_speed,
                  speed: tuple[float, float] = (0.0, 0.0),
-                 acceleration: float = c.onion_fall_acceleration):
+                 score_value: int = c.lettuce_score,
+                 target_y_dest: float = None,
+                 state: State = State.TARGET):
+
+        max_speed, acceleration = get_onion_speeds(state)
 
         super().__init__(center=center,
                          size=size,
-                         sprite_sheet=SpriteSheet(falling_info, size),
+                         sprite_sheet=SpriteSheet(sprite_sheet, frame_size, sprite_frames, size),
                          max_speed=max_speed,
                          speed=speed,
-                         acceleration=acceleration)
+                         acceleration=acceleration,
+                         score_value=score_value,
+                         target_y_dest=target_y_dest,
+                         state=state)
 
         self.sliced = False
+
+    def change_state(self,
+                     state: State):
+        self.max_speed, self.acceleration = get_onion_speeds(state)
+        if state == State.TARGET or state == State.FALLING:
+            self.sprite.change_sprite(state.value)
+        else:
+            self.sprite.change_sprite(state.value + 1)
+        super().change_state(state)
 
     def hit_by_bat(self):
         self.sliced = True
@@ -42,27 +51,4 @@ class OnionFalling(FallingBlock):
 
     def on_catch(self):
         if self.sliced:
-            return [OnionCaught(center=self.pos.center)]
-        # TODO Make method to 'bounce' off the sandwich.
-        return None
-
-
-class OnionTarget(TargetBlock):
-    def __init__(self,
-                 center: tuple[float, float],
-                 size: tuple[float, float],
-                 max_speed: float = None,
-                 acceleration: float = None,
-                 y_destination: float = None):
-
-        super().__init__(center=center,
-                         size=size,
-                         sprite_sheet=SpriteSheet(target_info, size),
-                         max_speed=max_speed,
-                         acceleration=acceleration,
-                         y_destination=y_destination)
-
-    def on_hit(self):
-        return [OnionFalling(center=self.pos.center,
-                             size=self.pos.size,
-                             speed=self.speed)]
+            return super().on_catch()

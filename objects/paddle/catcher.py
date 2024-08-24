@@ -1,7 +1,9 @@
 import constants as c
 from objects.paddle.paddle import Paddle
-from sprites.spritesheet import SpriteSheet
-from sprites.sheetinfo import catcher
+from sprites.spritesheet import SpriteSheet, get_image_and_frames
+
+sprite_frames = [1]
+sprite_sheet, frame_size = get_image_and_frames('assets/catcher.png', sprite_frames)
 
 
 class Catcher(Paddle):
@@ -14,7 +16,7 @@ class Catcher(Paddle):
 
         super().__init__(center=center,
                          size=size,
-                         sprite_sheet=SpriteSheet(catcher, size),
+                         sprite_sheet=SpriteSheet(sprite_sheet, frame_size, sprite_frames, size),
                          max_speed=max_speed,
                          speed=speed,
                          acceleration=acceleration)

@@ -46,6 +46,11 @@ class Position:
     def size(self):
         return self._width, self._height
 
+    @size.setter
+    def size(self,
+             new_size: tuple[float, float]):
+        self._width, self._height = new_size
+
     @property
     def center(self):
         return self._x, self._y

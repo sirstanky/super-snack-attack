@@ -1,11 +1,14 @@
 BUGS:
+caught blocks are not drawn in the correct positions
+    size is changed when caught but sprite needs to be scaled for new size
 LAG
     might come from looping through all the blocks multiple times per frame
-        collisions
-        draw
-        updates
-            (could move draw into block update to save cycles)
-    create a fixed image for target and caught ingredients and update them on change to save on cycles?
+        collisions - 1,000,000 in ball
+            move collisions into blocks to save frames (eliminates an entire iteration through all the target blocks)
+        draw - 1,000,000 in block manager
+        create a fixed image for target and caught ingredients and update them on change to save on cycles?
+    lettuce sin function taking large overhead?
+        just use acceleration and decelerations instead?
 still losing the ball on occasion
     looks like it bounces off of a block out of the screen when in the exact corner
 
@@ -20,6 +23,7 @@ tune direction ball moves when hit by bat (make the ball go vertically when hit 
 adjust acceleration function for different directions instead of handling all in one?
 
 CURRENT FOCUS:
+piece sprites back together and add dropped state so game can be tested again with changes
 add 'serving' behavior for round start
     let the player carry the ball and hit it when they are ready to begin
         allows for the adjustment of the ball's x position

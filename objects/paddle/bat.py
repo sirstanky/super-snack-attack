@@ -5,11 +5,13 @@ import pygame as pg
 import constants as c
 from controls.timer import Timer
 from objects.ball.ball import Ball
-from objects.blocks.block import FallingBlock
+from objects.blocks.block import Block
 from objects.paddle.paddle import Paddle
 from objects.position import Position
-from sprites.spritesheet import SpriteSheet
-from sprites.sheetinfo import bat
+from sprites.spritesheet import SpriteSheet, get_image_and_frames
+
+sprite_frames = [2]
+sprite_sheet, frame_size = get_image_and_frames('assets/player.png', sprite_frames)
 
 
 class Bat(Paddle):
@@ -22,7 +24,7 @@ class Bat(Paddle):
 
         super().__init__(center=center,
                          size=size,
-                         sprite_sheet=SpriteSheet(bat, size),
+                         sprite_sheet=SpriteSheet(sprite_sheet, frame_size, sprite_frames, size),
                          max_speed=max_speed,
                          speed=speed,
                          acceleration=acceleration)
@@ -35,7 +37,7 @@ class Bat(Paddle):
 
     def swing(self,
               ball: Ball,
-              falling_blocks: list[FallingBlock]):
+              falling_blocks: list[Block]):
 
         def get_closest_point():
             def get_intersection_point():
